@@ -61,6 +61,7 @@ flutter:
     - assets/images/google_icon.png
     - assets/images/apple_icon.png
     - assets/images/login_signup_logo.png
+    - assets/images/landing_page_image.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

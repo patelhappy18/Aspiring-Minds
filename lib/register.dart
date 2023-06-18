@@ -39,11 +39,13 @@ class _Register extends State<Register> {
 
           const SizedBox(height: 20),
 
-          TxtButton(
+          const TxtButton(
             buttonText: "Submit",
             btnColor: Colors.orange,
             txtColor: Colors.white,
             borderColor: Colors.grey,
+            width: 0.20,
+            isIconBtn: false,
           ),
 
           const SizedBox(height: 30),

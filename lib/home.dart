@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import "package:aspirant_minds/buttons_UI/icon_button.dart";
+import "package:aspirant_minds/buttons_UI/text_button.dart";
+import "package:aspirant_minds/textbox_UI/text_box.dart";
 
 class Home extends StatelessWidget {
   const Home(this.startQuiz, {super.key});
@@ -11,51 +14,115 @@ class Home extends StatelessWidget {
   void rollDice() {}
   @override
   Widget build(context) {
-    return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Image.asset(
-          //This is the 1st method to change the opacity
-          'assets/images/login_signup_logo.png',
-          width: 300,
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/landing_page_image.png"),
+            fit: BoxFit.cover,
+          ),
         ),
-        // Opacity( //wrap using this in order to change the opacity.
-        //   opacity: 0.5,
-        //   child: Image.asset(
-        //     //right click and click on refactor and then wrap with widget
-        //     'assets/images/quiz-logo.png',
-        //     width: 300,
-        //   ),
-        // ),
-        const SizedBox(
-          height: 80,
+        child: Center(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.95,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.70,
+                  child: const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text(
+                            'Life learning is the',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 3, 3, 3),
+                                fontSize: 33,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text(
+                            'key to success.',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 3, 3, 3),
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+
+                      TxtButton(
+                        isIconBtn: false,
+                        buttonText: "Get Started",
+                        btnColor: Colors.orange,
+                        txtColor: Colors.white,
+                        borderColor: Colors.grey,
+                        width: 0.38,
+                      ),
+
+                      SizedBox(height: 20),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey,
+                              thickness: 1,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: Text('OR',
+                                style: TextStyle(color: Colors.black)),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey,
+                              thickness: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 30),
+
+                      // AnswerButton(answerText: 'Answer Text 1....', onTap: () {}),
+                      // AnswerButton(answerText: 'Answer Text 2....', onTap: () {}),
+                      // AnswerButton(answerText: 'Answer Text 3....', onTap: () {}),
+
+                      TxtButton(
+                        buttonText: 'Already have an account',
+                        isIconBtn: false,
+                        txtColor: Colors.white,
+                        btnColor: Colors.black,
+                        borderColor: Colors.white,
+                        width: 0.26,
+                      ),
+                      SizedBox(height: 30),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
-        const Text(
-          'Learn with Aspirant Minds !',
-          style: TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: 25,
-              color: Colors.black,
-              fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(
-          height: 80,
-        ),
-        OutlinedButton.icon(
-            onPressed: startQuiz,
-            style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Colors.orange),
-            icon: const Icon(Icons.arrow_right_alt),
-            label: const Text(
-              'Start Learning',
-            )),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: const Text(
-        //     'Start Quiz 1',
-        //     style: TextStyle(color: Colors.white),
-        //   ),
-        // ),
-      ]),
+      ),
     );
   }
 }
