@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class iconButton extends StatelessWidget {
-  const iconButton(
+class CustomIconButton extends StatelessWidget {
+  const CustomIconButton(
       {super.key,
       required this.iconPath,
       required this.buttonText,
@@ -27,15 +27,15 @@ class iconButton extends StatelessWidget {
             padding: MaterialStateProperty.all<EdgeInsets>(
               EdgeInsets.symmetric(
                 horizontal: constraints.maxWidth *
-                    0.30, // Adjust the button padding based on available width
-                vertical: 15.0,
+                    0.21, // Adjust the button padding based on available width
+                vertical: 18.0,
               ),
             ),
             backgroundColor: MaterialStateProperty.all<Color>(btnColor),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius:
-                    BorderRadius.circular(10), // Set the border radius
+                    BorderRadius.circular(50), // Set the border radius
                 side: BorderSide(color: borderColor), // Set the border color
               ),
             ), // Set the background color
@@ -43,7 +43,7 @@ class iconButton extends StatelessWidget {
           label: Text(
             buttonText,
             style: TextStyle(
-                fontSize: 11.0, color: txtColor, fontWeight: FontWeight.w800),
+                fontSize: 16.0, color: txtColor, fontWeight: FontWeight.w800),
           ),
           icon: Image.asset(iconPath,
               width: 24, // Set the desired width of the icon

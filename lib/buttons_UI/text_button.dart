@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class TxtButton extends StatelessWidget {
   const TxtButton({
     super.key,
+    required this.onClick,
     required this.buttonText,
     required this.btnColor,
     required this.txtColor,
@@ -17,6 +18,7 @@ class TxtButton extends StatelessWidget {
   final Color borderColor;
   final bool isIconBtn;
   final double width;
+  final void Function() onClick;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class TxtButton extends StatelessWidget {
         return isIconBtn
             ? ElevatedButton.icon(
                 onPressed: () {
+                  onClick();
                   // Perform an action when the button is pressed
                 },
                 style: ButtonStyle(
@@ -55,9 +58,10 @@ class TxtButton extends StatelessWidget {
                 icon: const Icon(Icons.arrow_circle_right),
               )
             : Container(
-                constraints: BoxConstraints(maxWidth: 1000),
+                constraints: const BoxConstraints(maxWidth: 1000),
                 child: ElevatedButton(
                   onPressed: () {
+                    onClick();
                     // Perform an action when the button is pressed
                   },
                   style: ButtonStyle(

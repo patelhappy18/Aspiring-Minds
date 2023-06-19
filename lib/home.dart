@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import "package:aspirant_minds/buttons_UI/icon_button.dart";
+// import "package:aspirant_minds/buttons_UI/icon_button.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 
 class Home extends StatelessWidget {
-  const Home(this.startQuiz, {super.key});
+  const Home(this.switchScreen, {super.key});
 
-  final void Function()
-      startQuiz; //value of this.startQuiz will be directly assigned to startQuiz
+  final void Function(String screenName) switchScreen;
+////value of this.startQuiz will be directly assigned to startQuiz
 //The reason why you cannot access the constructor arguments directly outside the constructor is because they are local variables within the constructor's scope. Once the constructor finishes executing and the object is created, these arguments are no longer accessible from outside the object.
 //However, you can make the constructor arguments accessible by assigning them to instance variables within the constructor.
 
-  void rollDice() {}
   @override
   Widget build(context) {
     return Scaffold(
@@ -35,13 +34,13 @@ class Home extends StatelessWidget {
                 ),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.70,
-                  child: const Column(
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
-                      Row(
+                      const Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
@@ -53,7 +52,7 @@ class Home extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Row(
+                      const Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
@@ -65,7 +64,7 @@ class Home extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
                       TxtButton(
                         isIconBtn: false,
@@ -73,12 +72,17 @@ class Home extends StatelessWidget {
                         btnColor: Colors.orange,
                         txtColor: Colors.white,
                         borderColor: Colors.grey,
-                        width: 0.38,
+                        width: 0.35,
+                        onClick: () {
+                          switchScreen("register");
+                        },
                       ),
 
                       SizedBox(height: 20),
 
-                      Row(
+                      const SizedBox(height: 20),
+
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
@@ -100,7 +104,7 @@ class Home extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
 
                       // AnswerButton(answerText: 'Answer Text 1....', onTap: () {}),
                       // AnswerButton(answerText: 'Answer Text 2....', onTap: () {}),
@@ -112,9 +116,12 @@ class Home extends StatelessWidget {
                         txtColor: Colors.white,
                         btnColor: Colors.black,
                         borderColor: Colors.white,
-                        width: 0.26,
+                        width: 0.24,
+                        onClick: () {
+                          switchScreen("login");
+                        },
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                     ],
                   ),
                 ),

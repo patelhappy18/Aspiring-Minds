@@ -1,3 +1,4 @@
+import 'package:aspirant_minds/login.dart';
 import 'package:flutter/material.dart';
 import 'package:aspirant_minds/home.dart';
 import 'package:aspirant_minds/register.dart';
@@ -20,9 +21,17 @@ class __Index extends State<Index> {
     super.initState();
   }
 
-  void switchScreen() {
+  void switchScreen(String screenName) {
     setState(() {
-      activeScreen = const Register();
+      if (screenName == "register") {
+        activeScreen = Register(switchScreen);
+      }
+      if (screenName == "home") {
+        activeScreen = Home(switchScreen);
+      }
+      if (screenName == "login") {
+        activeScreen = Login(switchScreen);
+      }
     });
   }
 

@@ -4,18 +4,18 @@ import "package:flutter/material.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 
-class Register extends StatefulWidget {
-  const Register(this.switchScreen, {super.key});
+class Login extends StatefulWidget {
+  const Login(this.switchScreen, {super.key});
 
   final void Function(String screenName) switchScreen;
 
   @override
-  State<Register> createState() {
-    return _Register();
+  State<Login> createState() {
+    return _Login();
   }
 }
 
-class _Register extends State<Register> {
+class _Login extends State<Login> {
   void onBtnPress() {
     widget.switchScreen("home");
   }
@@ -43,19 +43,19 @@ class _Register extends State<Register> {
                         color: Color.fromRGBO(240, 130, 0, 1),
                       ),
                       onClick: onBtnPress,
-                    )
+                    ),
                   ],
                 ),
                 Image.asset(
                   'assets/images/login_signup_logo.png',
                   height: 250,
                 ), // Replace with your image source
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 const Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      "Sign Up",
+                      "Login",
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.w800,
@@ -63,27 +63,34 @@ class _Register extends State<Register> {
                     )
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      TextBox(innerTxt: ' First Name'),
-                      const SizedBox(height: 10),
-                      TextBox(innerTxt: ' Last Name'),
-                      const SizedBox(height: 10),
                       TextBox(innerTxt: ' Email Address'),
                       const SizedBox(height: 10),
                       TextBox(innerTxt: ' Password'),
                       const SizedBox(height: 10),
-                      const Text(
-                          "By signing up, you agree to our Terms & Conditions and Privacy Policy"),
+                      const Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "Forgot Password?",
+                        ),
+                      ),
+                      const SizedBox(height: 30),
                     ],
                   ),
                 ),
-
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Don’t have an account? Sign Up",
+                  ),
+                ),
+                const SizedBox(height: 10),
                 TxtButton(
-                  buttonText: "Submit",
+                  buttonText: "Login",
                   btnColor: const Color.fromRGBO(240, 130, 0, 1),
                   txtColor: Colors.white,
                   borderColor: Colors.grey,
@@ -117,7 +124,7 @@ class _Register extends State<Register> {
                 ),
                 const SizedBox(height: 20),
                 const CustomIconButton(
-                  buttonText: 'Sign up with Google',
+                  buttonText: 'Login with Google',
                   iconPath: 'assets/images/google_icon.png',
                   txtColor: Colors.white,
                   btnColor: Colors.black,
