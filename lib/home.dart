@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 // import "package:aspirant_minds/buttons_UI/icon_button.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Home extends StatelessWidget {
   const Home(this.switchScreen, {super.key});
@@ -10,6 +12,17 @@ class Home extends StatelessWidget {
 ////value of this.startQuiz will be directly assigned to startQuiz
 //The reason why you cannot access the constructor arguments directly outside the constructor is because they are local variables within the constructor's scope. Once the constructor finishes executing and the object is created, these arguments are no longer accessible from outside the object.
 //However, you can make the constructor arguments accessible by assigning them to instance variables within the constructor.
+  void saveData() {
+    final DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref().child('users');
+
+// Define a method to insert data
+    // Create a new child node under a specified parent node
+    databaseReference.child('users').push().set({
+      'name': 'John Doe',
+      'email': 'johndoe@example.com',
+    });
+  }
 
   @override
   Widget build(context) {
@@ -131,5 +144,19 @@ class Home extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class Person {
+  final String name;
+  final int age;
+
+  Person({required this.name, required this.age});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'age': age,
+    };
   }
 }
