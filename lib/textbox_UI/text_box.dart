@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 
 class TextBox extends StatelessWidget {
-  TextBox({super.key, required this.innerTxt});
+  TextBox({super.key, required this.innerTxt, this.iconStart});
 
+  final Icon? iconStart;
   String innerTxt;
 
   @override
@@ -16,6 +17,7 @@ class TextBox extends StatelessWidget {
           keyboardType: TextInputType.visiblePassword,
           decoration: InputDecoration(
             hintText: innerTxt,
+            prefixIcon: iconStart ?? null,
             // border: const OutlineInputBorder(),
             filled: true,
             fillColor: const Color.fromARGB(
