@@ -2,6 +2,7 @@ import 'package:aspirant_minds/login.dart';
 import 'package:flutter/material.dart';
 import 'package:aspirant_minds/home.dart';
 import 'package:aspirant_minds/register.dart';
+import "package:aspirant_minds/profile.dart";
 
 class Index extends StatefulWidget {
   const Index({super.key});
@@ -46,7 +47,7 @@ class __Index extends State<Index> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           )),
-          child: activeScreen,
+          child: ProfilePage2(),
           //another method to change the widgets
           // child: activeScreen == 'start-screen' ? startScreen(switchScreen()): const QuestionScreens(),
         ),

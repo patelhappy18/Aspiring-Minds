@@ -54,13 +54,13 @@ class _Login extends State<Login> {
                 const Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    // Text(
-                    //   "Login",
-                    //   style: TextStyle(
-                    //     fontSize: 26,
-                    //     fontWeight: FontWeight.w800,
-                    //   ),
-                    // )
+                    Text(
+                      "Login",
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -68,16 +68,16 @@ class _Login extends State<Login> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      // TextBox(innerTxt: ' Email Address'),
-                      // const SizedBox(height: 10),
-                      // TextBox(innerTxt: ' Password'),
-                      // const SizedBox(height: 10),
-                      // const Align(
-                      //   alignment: Alignment.centerRight,
-                      //   child: Text(
-                      //     "Forgot Password?",
-                      //   ),
-                      // ),
+                      TextBox(innerTxt: ' Email Address'),
+                      const SizedBox(height: 10),
+                      TextBox(innerTxt: ' Password'),
+                      const SizedBox(height: 10),
+                      const Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "Forgot Password?",
+                        ),
+                      ),
                       const SizedBox(height: 30),
                     ],
                   ),
