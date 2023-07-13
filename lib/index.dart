@@ -2,7 +2,11 @@ import 'package:aspirant_minds/login.dart';
 import 'package:flutter/material.dart';
 import 'package:aspirant_minds/home.dart';
 import 'package:aspirant_minds/register.dart';
+<<<<<<< Updated upstream
 import "package:aspirant_minds/profile.dart";
+=======
+import 'package:aspirant_minds/course_home_page.dart';
+>>>>>>> Stashed changes
 
 class Index extends StatefulWidget {
   const Index({super.key});

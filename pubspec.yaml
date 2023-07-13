@@ -62,6 +62,7 @@ flutter:
     - assets/images/apple_icon.png
     - assets/images/login_signup_logo.png
     - assets/images/landing_page_image.png
+<<<<<<< Updated upstream
     - assets/images/profile.png
     - assets/images/profile_big.png
     - assets/images/jack.png
@@ -72,6 +73,11 @@ flutter:
     - assets/images/message_icon.png
     - assets/images/profile_icon.png
     - assets/images/purchase_icon.png
+    - assets/images/course_home_page/main_photo.png
+    - assets/images/course_home_page/profile.png
+    - assets/images/course_home_page/star_1.png
+    - assets/images/course_home_page/Down_arrow.png
+>>>>>>> Stashed changes
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
