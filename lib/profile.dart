@@ -10,7 +10,7 @@ class ProfilePage2 extends StatelessWidget {
       children: [
         Container(
           width: 430,
-          height: 932,
+          height: 800,
           clipBehavior: Clip.antiAlias,
           decoration: ShapeDecoration(
             color: Colors.white,
@@ -25,16 +25,16 @@ class ProfilePage2 extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                left: 171,
+                left: 151,
                 top: 47,
                 child: SizedBox(
-                  width: 88,
-                  height: 21,
+                  width: 90,
+                  height: 25,
                   child: Text(
                     'Profile',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 24,
+                      fontSize: 22,
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.20,
@@ -318,7 +318,7 @@ class ProfilePage2 extends StatelessWidget {
                           width: 41,
                           height: 42,
                           decoration: ShapeDecoration(
-                            image: DecorationImage(
+                            image: const DecorationImage(
                               image: AssetImage('assets/images/lucy.png'),
                               fit: BoxFit.cover,
                             ),
@@ -328,7 +328,7 @@ class ProfilePage2 extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Positioned(
+                      const Positioned(
                         left: 55,
                         top: 15,
                         child: SizedBox(
@@ -366,7 +366,7 @@ class ProfilePage2 extends StatelessWidget {
               ),
               Positioned(
                 left: 39,
-                top: 820,
+                top: 700,
                 child: Container(
                   width: 346,
                   height: 56.95,
@@ -380,8 +380,7 @@ class ProfilePage2 extends StatelessWidget {
                           height: 17,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://via.placeholder.com/19x17"),
+                              image: AssetImage('assets/images/home_icon.png'),
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -395,8 +394,8 @@ class ProfilePage2 extends StatelessWidget {
                           height: 17,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://via.placeholder.com/19x17"),
+                              image:
+                                  AssetImage('assets/images/message_icon.png'),
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -410,8 +409,8 @@ class ProfilePage2 extends StatelessWidget {
                           height: 17,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://via.placeholder.com/19x17"),
+                              image:
+                                  AssetImage('assets/images/purchase_icon.png'),
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -425,8 +424,8 @@ class ProfilePage2 extends StatelessWidget {
                           height: 17,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://via.placeholder.com/19x17"),
+                              image:
+                                  AssetImage('assets/images/profile_icon.png'),
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -458,12 +457,12 @@ class ProfilePage2 extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Positioned(
+                      const Positioned(
                         left: 0,
                         top: 9,
                         child: SizedBox(
                           width: 131,
-                          height: 9,
+                          height: 20,
                           child: Text(
                             'Edit profile',
                             textAlign: TextAlign.center,

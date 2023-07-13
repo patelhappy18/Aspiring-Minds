@@ -68,6 +68,10 @@ flutter:
     - assets/images/marry.png
     - assets/images/mike.png
     - assets/images/lucy.png
+    - assets/images/home_icon.png
+    - assets/images/message_icon.png
+    - assets/images/profile_icon.png
+    - assets/images/purchase_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
