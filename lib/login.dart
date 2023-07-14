@@ -130,7 +130,7 @@ class _Login extends State<Login> {
                   btnColor: Colors.black,
                   borderColor: Colors.grey,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 50),
               ],
             ),
           ),

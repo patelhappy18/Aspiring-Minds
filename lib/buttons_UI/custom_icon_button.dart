@@ -27,7 +27,7 @@ class CustomIconButton extends StatelessWidget {
             padding: MaterialStateProperty.all<EdgeInsets>(
               EdgeInsets.symmetric(
                 horizontal: constraints.maxWidth *
-                    0.21, // Adjust the button padding based on available width
+                    0.17, // Adjust the button padding based on available width
                 vertical: 18.0,
               ),
             ),
@@ -43,10 +43,10 @@ class CustomIconButton extends StatelessWidget {
           label: Text(
             buttonText,
             style: TextStyle(
-                fontSize: 16.0, color: txtColor, fontWeight: FontWeight.w800),
+                fontSize: 13.0, color: txtColor, fontWeight: FontWeight.w800),
           ),
           icon: Image.asset(iconPath,
-              width: 24, // Set the desired width of the icon
+              width: 50, // Set the desired width of the icon
               height: 24),
         );
       },

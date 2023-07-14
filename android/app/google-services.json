@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "729259964518",
+    "firebase_url": "https://aspiring-minds-backend-default-rtdb.firebaseio.com",
+    "project_id": "aspiring-minds-backend",
+    "storage_bucket": "aspiring-minds-backend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729259964518:android:458487cef139f346ed15a7",
+        "android_client_info": {
+          "package_name": "com.example.aspirant_minds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729259964518-tmp0349j86ncbidpfngcaskh8b4v6b00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2bL3NYOwQ3qpsxL3d1frDqLeh_B0rH0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729259964518-tmp0349j86ncbidpfngcaskh8b4v6b00.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "729259964518-aqoojuvmv7mc5sjq8dj5drv22utan1bf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.aspirantMinds.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

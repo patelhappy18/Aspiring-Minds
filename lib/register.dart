@@ -3,6 +3,8 @@ import "package:aspirant_minds/buttons_UI/custom_icon_button.dart";
 import "package:flutter/material.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
+import "package:http/http.dart" as http;
+import 'dart:convert';
 
 class Register extends StatefulWidget {
   const Register(this.switchScreen, {super.key});
@@ -16,6 +18,31 @@ class Register extends StatefulWidget {
 }
 
 class _Register extends State<Register> {
+  String _responseData = '';
+
+  Future<void> fetchData() async {
+    var url = Uri.parse('http://localhost:8080/endpoint');
+
+    try {
+      var response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        var decodedData = json.decode(response.body);
+        setState(() {
+          _responseData = decodedData['message'];
+        });
+      } else {
+        setState(() {
+          _responseData = 'Error: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _responseData = 'Error: $e';
+      });
+    }
+  }
+
   void onBtnPress() {
     widget.switchScreen("home");
   }
@@ -69,13 +96,13 @@ class _Register extends State<Register> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TextBox(innerTxt: ' First Name'),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       TextBox(innerTxt: ' Last Name'),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       TextBox(innerTxt: ' Email Address'),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       TextBox(innerTxt: ' Password'),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       const Text(
                           "By signing up, you agree to our Terms & Conditions and Privacy Policy"),
                     ],
@@ -88,7 +115,7 @@ class _Register extends State<Register> {
                   txtColor: Colors.white,
                   borderColor: Colors.grey,
                   isIconBtn: false,
-                  onClick: () {},
+                  onClick: fetchData,
                   width: 0.4,
                 ),
 
@@ -123,7 +150,7 @@ class _Register extends State<Register> {
                   btnColor: Colors.black,
                   borderColor: Colors.grey,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
               ],
             ),
           ),

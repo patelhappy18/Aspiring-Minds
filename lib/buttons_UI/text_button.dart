@@ -85,7 +85,7 @@ class TxtButton extends StatelessWidget {
                   child: Text(
                     buttonText,
                     style: TextStyle(
-                        fontSize: 15.0,
+                        fontSize: 13.0,
                         color: txtColor,
                         fontWeight: FontWeight.w800),
                   ),
