@@ -81,6 +81,7 @@ flutter:
     - assets/images/img_homeicon.png
     - assets/images/img_messageicon.png
     - assets/images/img_purchaseicon.png
+    - assets/images/chat_profile.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
