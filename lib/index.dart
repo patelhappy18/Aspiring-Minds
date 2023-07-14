@@ -1,7 +1,9 @@
+import 'package:aspirant_minds/courses.dart';
 import 'package:aspirant_minds/login.dart';
 import 'package:flutter/material.dart';
 import 'package:aspirant_minds/home.dart';
 import 'package:aspirant_minds/register.dart';
+import 'package:aspirant_minds/course_home_page.dart';
 
 class Index extends StatefulWidget {
   const Index({super.key});
