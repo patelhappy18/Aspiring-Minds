@@ -5,6 +5,7 @@ const passport = require("passport");
 const path = require("path");
 
 const Register = require("./model/register");
+const Login = require("./model/login");
 const cors = require("cors");
 const oneDay = 1000 * 60 * 60 * 24;
 const session = require("express-session");
@@ -18,6 +19,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 const upload = require("./middleware/upload");
 const tasks = require("./routes/tasks");
 const flash = require("connect-flash");
+const { log } = require('console');
 // app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 // app.use(passport.initialize());
@@ -37,7 +39,12 @@ app.post('/register', async(req, res) => {
       res.send("HEllo");
       const registerUser = await Register.create({email:req.body.email});
 });
-  
+
+app.post('/login', async(req, res) => {
+  console.log(req.body.email);
+  console.log(req.body.password);
+  res.send(req.body.email+req.body.password);
+});
 
 const start = async () => {
   try {
