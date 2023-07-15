@@ -11,5 +11,6 @@ const {
 } = require("../controllers/register");
 
 router.route("/register").post(createUser);
+router.route("/fetchuser").post(createUser);
 
 module.exports = router;

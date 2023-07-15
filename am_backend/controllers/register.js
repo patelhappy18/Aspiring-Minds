@@ -154,6 +154,13 @@ const getUser = asyncWrapper(async (req, res) => {
   
 });
 
+const getUserDetails = asyncWrapper(async (req, res) => {
+
+  const user = await Register.find({_id:req.params.id});
+  console.log(user);
+
+})
+
 module.exports = {
-  createUser,getUser  
+  createUser,getUser,getUserDetails  
 };

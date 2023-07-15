@@ -46,6 +46,14 @@ app.post('/login', async(req, res) => {
   res.send(req.body.email+req.body.password);
 });
 
+app.get('/getUserDetails', async(req, res) => {
+  const email = req.body.email;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+
+  res.send(req.body);
+});
+
 const start = async () => {
   try {
     await connectDB(
