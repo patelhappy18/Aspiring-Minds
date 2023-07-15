@@ -1,4 +1,6 @@
 import 'package:aspirant_minds/login.dart';
+import 'package:aspirant_minds/other_user_profile.dart';
+import 'package:aspirant_minds/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:aspirant_minds/home.dart';
 import 'package:aspirant_minds/register.dart';
@@ -46,7 +48,8 @@ class __Index extends State<Index> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           )),
-          child: activeScreen,
+          // child: CourseHomePage(switchScreen),
+          child: Profile(switchScreen),
           //another method to change the widgets
           // child: activeScreen == 'start-screen' ? startScreen(switchScreen()): const QuestionScreens(),
         ),
