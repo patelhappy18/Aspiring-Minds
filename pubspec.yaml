@@ -65,6 +65,25 @@ flutter:
     - assets/images/apple_icon.png
     - assets/images/login_signup_logo.png
     - assets/images/landing_page_image.png
+    - assets/images/profile.png
+    - assets/images/profile_big.png
+    - assets/images/jack.png
+    - assets/images/marry.png
+    - assets/images/mike.png
+    - assets/images/lucy.png
+    - assets/images/home_icon.png
+    - assets/images/message_icon.png
+    - assets/images/profile_icon.png
+    - assets/images/purchase_icon.png
+    - assets/images/coursethumbnail.png
+    - assets/images/course_home_page/main_photo.png
+    - assets/images/course_home_page/profile.png
+    - assets/images/course_home_page/star_1.png
+    - assets/images/course_home_page/Down_arrow.png
+    - assets/images/img_profileicon.png
+    - assets/images/img_homeicon.png
+    - assets/images/img_messageicon.png
+    - assets/images/img_purchaseicon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
