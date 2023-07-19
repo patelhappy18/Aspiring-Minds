@@ -64,6 +64,18 @@ const returnChatMessages = asyncWrapper(async (req, res) => {
       }
     
   });
+
+
+  const reply = asyncWrapper(async (req, res) => {
+
+    const username = req.body.username;
+    const email = req.body.email;
+    const message = req.body.message;
+    const tasks = await Register.findOne({email: email });
+console.log(message+username)
+  
+      
+  });
   module.exports = {
     returnChatMessages
   };
