@@ -138,10 +138,37 @@ async function sendMail(email,Otp){
   }
 }
 
+const changePassword = asyncWrapper(async (req, res) => {
+  
+  let data = await Otp.findOne({email:req.body.email,code:req.body.otpCode})
+  console.log(data);
+  if(data){
+      
+      let currentTime = new Date().getTime();
+      let diffTime = data.expireIn - currentTime;
+      if(diffTime<0){
+        req.flash('expired','OTP you entered Expired');
+        return res.status(401).json({ msg: "OTP you entered expired !" });
+
+      }else{
+        res.json("Success");
+      }
+  }
+  else{
+    return res.status(402).json({ msg: "Invalid OTP Entered !" });
+  }
+
+})
+
+const updatePasswordGoogle = asyncWrapper(async (req, res) => {
+  let user = await Register.findOne({email:req.body.email})
+  user.password = await bcrypt.hash(req.body.password,12);
+  user.save();
+  res.json("Success");
+})
 
 
 
 module.exports = {
-  getUser,createUser,emailSend,
-  //changePassword,updatePasswordGoogle
+  getUser,createUser,emailSend,changePassword,updatePasswordGoogle
 };
