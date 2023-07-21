@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 
 class CustomIconButton extends StatelessWidget {
-  const CustomIconButton(
-      {super.key,
-      required this.iconPath,
-      required this.buttonText,
-      required this.btnColor,
-      required this.txtColor,
-      required this.borderColor});
+  const CustomIconButton({
+    super.key,
+    required this.iconPath,
+    required this.buttonText,
+    required this.btnColor,
+    required this.txtColor,
+    required this.borderColor,
+  });
 
   final String buttonText;
   final String iconPath;
   final Color btnColor;
   final Color txtColor;
   final Color borderColor;
+  // final void Function() loginWithGoogle;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ElevatedButton.icon(
-          onPressed: () {
-            // Perform an action when the button is pressed
-          },
+          onPressed: () {},
           style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
               EdgeInsets.symmetric(

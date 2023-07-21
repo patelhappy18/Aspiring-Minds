@@ -178,7 +178,7 @@ class _Login extends State<Login> {
                   width: 0.4,
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 19),
 
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -201,7 +201,6 @@ class _Login extends State<Login> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
                 const CustomIconButton(
                   buttonText: 'Login with Google',
                   iconPath: 'assets/images/google_icon.png',

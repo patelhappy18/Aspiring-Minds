@@ -145,8 +145,7 @@ class _Register extends State<Register> {
 
   @override
   Widget build(context) {
-    return SizedBox(
-      width: double.infinity,
+    return SafeArea(
       child: Center(
         child: Container(
           width: MediaQuery.of(context).size.width * 0.80,
@@ -171,7 +170,7 @@ class _Register extends State<Register> {
                 ),
                 Image.asset(
                   'assets/images/login_signup_logo.png',
-                  height: 250,
+                  height: 240,
                 ), // Replace with your image source
                 const SizedBox(height: 5),
                 const Row(

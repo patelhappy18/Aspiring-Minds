@@ -38,6 +38,9 @@ dependencies:
   firebase_core: ^2.14.0
   firebase_database: ^10.2.3
   shared_preferences: ^2.0.9
+  google_sign_in: ^6.1.4
+  flutter_html: ^2.1.5
+  url_launcher: ^6.0.4
 
 dev_dependencies:
   flutter_test:
