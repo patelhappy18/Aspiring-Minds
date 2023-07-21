@@ -8,26 +8,21 @@ const TaskSchema = new mongoose.Schema({
     unique: true,
   },
 
-  // password: {
-  //   type: String,
-  //   required: [true, " Password must provide name"],
-  //   trim: true,
-  //   maxlength: [100, "Cannot be more than 20 characters"],
-  // },
-  // pname:{
-  //   type: String,
-  //   required: [true, " Profile Name must be provided"],
-  //   trim: true,
-
-  // },
-  // firstname: {
-  //   type: String,
-  //   trim: true,
-  // },
-  // lastname: {
-  //   type: String,
-  //   trim: true,
-  // },
+  password: {
+    type: String,
+    required: [true, " Password must provide name"],
+    trim: true,
+    maxlength: [100, "Cannot be more than 20 characters"],
+  },
+  
+  firstname: {
+    type: String,
+    trim: true,
+  },
+  lastname: {
+    type: String,
+    trim: true,
+  },
  
 });
 

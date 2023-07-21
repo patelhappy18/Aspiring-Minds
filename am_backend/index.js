@@ -24,15 +24,29 @@ const { log } = require('console');
 app.use(errorHandlerMiddleware);
 // app.use(passport.initialize());
 // app.use(passport.authenticate("session"));
+app.use(
+  session({
+    secret: "keythatwillsignedthecookie",
+    saveUninitialized: true,
+    resave: false, // RESAVE Means for every request to the server we need new cookie
+    cookie: { maxAge: oneDay },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.authenticate("session"));
 
 //Setup static directory to serve
 app.use(express.static(publicDirectoryPath));
 app.use(flash());
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/users", tasks);
 
+app.get('/get', async(req, res) => {
+  res.send("HEllo");
+});
 
 app.post('/register', async(req, res) => {
       console.log(req.body.email);
@@ -46,19 +60,50 @@ app.post('/login', async(req, res) => {
   res.send(req.body.email+req.body.password);
 });
 
-app.get('/getUserDetails', async(req, res) => {
-  const email = req.body.email;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
+app.post('/getUserDetails', async(req, res) => {
+  console.log(req.body.email);
+  console.log(req.body.password);
 
-  res.send(req.body);
+  // const registerUser = await Register.create({email:req.body.email});
+
 });
+
+app.post('/registerNewUser', async(req, res) => {
+  const firstname = req.body.firstname;
+  const lastname = req.body.lastname;
+  const email = req.body.email;
+  const tasks = await Register.findOne({email: email });
+
+
+    if(!tasks){
+      req.body.password = await bcrypt.hash(req.body.password,12);
+      const registerUser = await Register.create(req.body);
+    
+      req.session.userId = registerUser['_id'];
+      req.session.email = req.body.email;
+      req.session.pname = req.body.pname;
+      
+      console.log(req.session);
+      
+      // res.render("home-2",{records:provider,bills:files,ques:ques});
+
+    }
+    else{
+      req.flash('message','This email address is already registered with us')
+      res.redirect('/register');
+    }
+
+});
+
+
+
+
 
 const start = async () => {
   try {
     await connectDB(
-      "mongodb+srv://aspiring_minds:happy123@cluster0.sokemj9.mongodb.net/Aspiring-Minds?retryWrites=true&w=majority"
-    );
+      "mongodb+srv://goral_patel_1508:goral123@cluster0.sokemj9.mongodb.net/Aspiring-Minds?retryWrites=true&w=majority"
+      );
 
     app.listen(port, function () {
       console.log(`Express server listening on port ${port} `);

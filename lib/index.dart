@@ -1,6 +1,7 @@
 import 'package:aspirant_minds/chats.dart';
 import 'package:aspirant_minds/explore.dart';
 import 'package:aspirant_minds/forgot_password.dart';
+import 'package:aspirant_minds/courses.dart';
 import 'package:aspirant_minds/login.dart';
 import 'package:aspirant_minds/other_user_profile.dart';
 import 'package:aspirant_minds/profile.dart';
@@ -38,6 +39,9 @@ class __Index extends State<Index> {
       }
       if (screenName == "login") {
         activeScreen = Login(switchScreen);
+      }
+      if (screenName == "courses") {
+        activeScreen = Courses(switchScreen);
       }
     });
   }

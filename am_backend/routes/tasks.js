@@ -10,7 +10,12 @@ const {
   
 } = require("../controllers/register");
 
-router.route("/register").post(createUser);
-router.route("/fetchuser").post(createUser);
+router.route("/registerNewUser").post(createUser);
+
+router.route("/getUser").post(getUser);
+
+
+
+// router.route("/fetchuser").post(createUser);
 
 module.exports = router;

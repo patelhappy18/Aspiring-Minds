@@ -4,6 +4,7 @@ import "package:aspirant_minds/buttons_UI/custom_icon_button.dart";
 import "package:flutter/material.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Courses extends StatefulWidget {
   const Courses(this.switchScreen, {super.key});
@@ -38,6 +39,22 @@ class BottomMenuModel {
 }
 
 class _Courses extends State<Courses> {
+  String userName = '';
+  @override
+  void initState() {
+    super.initState();
+    // Call the function when the page is initialized
+    getUserName();
+  }
+
+  Future<void> getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('user_name') ?? 'Harry';
+    });
+    // Do something with the user's email...
+  }
+
   void onBtnPress() {
     widget.switchScreen("home");
   }
@@ -61,13 +78,13 @@ class _Courses extends State<Courses> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Column(
+                        Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Hello John Wick",
+                              userName,
                               style: TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.w900),
                             ),
