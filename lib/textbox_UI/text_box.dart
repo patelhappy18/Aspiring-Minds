@@ -7,9 +7,13 @@ class TextBox extends StatelessWidget {
     this.iconStart,
     this.customController,
     this.onSubmitted,
+    this.isPassword,
+    this.errorText,
   });
 
   final Icon? iconStart;
+  final bool? isPassword;
+  final String? errorText;
   String innerTxt;
   final TextEditingController? customController;
   final void Function(String)? onSubmitted;
@@ -25,8 +29,10 @@ class TextBox extends StatelessWidget {
           keyboardType: TextInputType.visiblePassword,
           controller: customController,
           onSubmitted: onSubmitted,
+          obscureText: isPassword ?? false,
           decoration: InputDecoration(
             hintText: innerTxt,
+            errorText: errorText ?? null,
             prefixIcon: iconStart ?? null,
             // border: const OutlineInputBorder(),
             filled: true,

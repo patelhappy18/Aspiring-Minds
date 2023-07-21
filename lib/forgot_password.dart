@@ -16,21 +16,30 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPassword extends State<ForgotPassword> {
-  bool? requestedToGetOTP;
+  String? currentState;
 
   @override
   void initState() {
-    requestedToGetOTP = false;
+    currentState = "getOTP";
     super.initState();
   }
 
   void onBtnPress() {
-    widget.switchScreen("home");
+    widget.switchScreen("login");
   }
 
   void onGetOTP() {
     setState(() {
-      requestedToGetOTP = true;
+      print(currentState);
+      if (currentState == "getOTP") {
+        currentState = "verifyOTP";
+        print(currentState);
+      } else if (currentState == "verifyOTP") {
+        currentState = "changePassword";
+      }
+      // if(currentState == "getOTP"){
+      // currentState = "verifyOTP";
+      // }
     });
   }
 
@@ -78,32 +87,21 @@ class _ForgotPassword extends State<ForgotPassword> {
                   ],
                 ),
                 const SizedBox(height: 30),
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
                 Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      requestedToGetOTP == true
-                          ? TextBox(innerTxt: ' OTP')
-                          : TextBox(innerTxt: ' Email Address'),
+                      currentState == "getOTP"
+                          ? TextBox(innerTxt: ' Email Address')
+                          : currentState == "verifyOTP"
+                              ? TextBox(innerTxt: ' OTP')
+                              : TextBox(innerTxt: ' New Password'),
                       const SizedBox(height: 10),
                     ],
                   ),
                 ),
                 const SizedBox(height: 10),
-                requestedToGetOTP == true
+                currentState == "getOTP"
                     ? TxtButton(
-                        buttonText: "Verify OTP",
-                        btnColor: const Color.fromRGBO(240, 130, 0, 1),
-                        txtColor: Colors.white,
-                        borderColor: Colors.grey,
-                        isIconBtn: false,
-                        onClick: () {},
-                        width: 0.39,
-                      )
-                    : TxtButton(
                         buttonText: "Get OTP",
                         btnColor: const Color.fromRGBO(240, 130, 0, 1),
                         txtColor: Colors.white,
@@ -111,9 +109,26 @@ class _ForgotPassword extends State<ForgotPassword> {
                         isIconBtn: false,
                         onClick: onGetOTP,
                         width: 0.4,
-                      ),
-                  ],
-                ),
+                      )
+                    : currentState == "verifyOTP"
+                        ? TxtButton(
+                            buttonText: "Verify OTP",
+                            btnColor: const Color.fromRGBO(240, 130, 0, 1),
+                            txtColor: Colors.white,
+                            borderColor: Colors.grey,
+                            isIconBtn: false,
+                            onClick: onGetOTP,
+                            width: 0.39,
+                          )
+                        : TxtButton(
+                            buttonText: "Change Password",
+                            btnColor: const Color.fromRGBO(240, 130, 0, 1),
+                            txtColor: Colors.white,
+                            borderColor: Colors.grey,
+                            isIconBtn: false,
+                            onClick: () {},
+                            width: 0.32,
+                          ),
 
                 const SizedBox(height: 50),
               ],

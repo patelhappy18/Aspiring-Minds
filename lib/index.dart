@@ -43,6 +43,9 @@ class __Index extends State<Index> {
       if (screenName == "courses") {
         activeScreen = Courses(switchScreen);
       }
+      if (screenName == "forgot_password") {
+        activeScreen = ForgotPassword(switchScreen);
+      }
     });
   }
 
@@ -57,7 +60,7 @@ class __Index extends State<Index> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           )),
-          // child: CourseHomePage(switchScreen),
+          // child: Login(switchScreen),
           child: activeScreen,
           //another method to change the widgets
           // child: activeScreen == 'start-screen' ? startScreen(switchScreen()): const QuestionScreens(),

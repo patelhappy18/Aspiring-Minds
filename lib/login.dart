@@ -23,6 +23,10 @@ class _Login extends State<Login> {
     widget.switchScreen("home");
   }
 
+  void onForgotPasswordPress() {
+    widget.switchScreen("forgot_password");
+  }
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String demo = "";
@@ -111,13 +115,13 @@ class _Login extends State<Login> {
                 const Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    // Text(
-                    //   "Login",
-                    //   style: TextStyle(
-                    //     fontSize: 26,
-                    //     fontWeight: FontWeight.w800,
-                    //   ),
-                    // )
+                    Text(
+                      "Login",
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -125,27 +129,24 @@ class _Login extends State<Login> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      TextField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                        ),
+                      TextBox(
+                        customController: _emailController,
+                        innerTxt: 'Email',
                       ),
                       // TextBox(innerTxt: ' Email Address'),
                       const SizedBox(height: 10),
-                      TextField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                        ),
-                        obscureText: true,
+                      TextBox(
+                        customController: _passwordController,
+                        innerTxt: 'Password',
+                        isPassword: true,
                       ),
                       // TextBox(innerTxt: ' Password'),
                       const SizedBox(height: 10),
-                      const Align(
+                      Align(
                         alignment: Alignment.centerRight,
-                        child: Text(
-                          "Forgot Password?",
+                        child: TextButton(
+                          onPressed: onForgotPasswordPress,
+                          child: const Text("Forgot Password?"),
                         ),
                       ),
 

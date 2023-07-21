@@ -191,46 +191,31 @@ class _Register extends State<Register> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      TextField(
-                        controller: _firstnameController,
-                        decoration: InputDecoration(
-                          labelText: 'FirstName',
-                          errorText:
-                              _firstNameError == '' ? null : _firstNameError,
-// Show the error message if not null
-                        ),
-                        // obscureText: true,
+                      TextBox(
+                        customController: _firstnameController,
+                        innerTxt: "FirstName",
+                        errorText:
+                            _firstNameError == '' ? null : _firstNameError,
                       ),
                       const SizedBox(height: 5),
-                      TextField(
-                        controller: _lastnameController,
-                        decoration: InputDecoration(
-                          labelText: 'LastName',
-                          errorText:
-                              _lastNameError == '' ? null : _lastNameError,
-                        ),
-                        // obscureText: true,
+                      TextBox(
+                        customController: _lastnameController,
+                        innerTxt: 'LastName',
+                        errorText: _lastNameError == '' ? null : _lastNameError,
                       ),
-                      // TextBox(innerTxt: ' Last Name'),
                       const SizedBox(height: 5),
-                      TextField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          errorText: _emailError == '' ? null : _emailError,
-                        ),
-                        // obscureText: true,
+                      TextBox(
+                        customController: _emailController,
+                        innerTxt: 'Email',
+                        errorText: _emailError == '' ? null : _emailError,
                       ),
                       // TextBox(innerTxt: ' Email Address'),
                       const SizedBox(height: 5),
-                      TextField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          errorText:
-                              _passwordError == '' ? null : _passwordError,
-                        ),
-                        obscureText: true,
+                      TextBox(
+                        customController: _passwordController,
+                        innerTxt: 'Password',
+                        errorText: _passwordError == '' ? null : _passwordError,
+                        isPassword: true,
                       ),
                       // TextBox(innerTxt: ' Password'),
 
