@@ -78,42 +78,42 @@ class _ForgotPassword extends State<ForgotPassword> {
                   ],
                 ),
                 const SizedBox(height: 30),
-                // Column(
-                //   mainAxisSize: MainAxisSize.max,
-                //   children: [
-                // Expanded(
-                //   child: Column(
-                //     mainAxisSize: MainAxisSize.max,
-                //     children: [
-                //       requestedToGetOTP == true
-                //           ? TextBox(innerTxt: ' OTP')
-                //           : TextBox(innerTxt: ' Email Address'),
-                //       const SizedBox(height: 10),
-                //     ],
-                //   ),
-                // ),
-                // const SizedBox(height: 10),
-                // requestedToGetOTP == true
-                //     ? TxtButton(
-                //         buttonText: "Verify OTP",
-                //         btnColor: const Color.fromRGBO(240, 130, 0, 1),
-                //         txtColor: Colors.white,
-                //         borderColor: Colors.grey,
-                //         isIconBtn: false,
-                //         onClick: () {},
-                //         width: 0.39,
-                //       )
-                //     : TxtButton(
-                //         buttonText: "Get OTP",
-                //         btnColor: const Color.fromRGBO(240, 130, 0, 1),
-                //         txtColor: Colors.white,
-                //         borderColor: Colors.grey,
-                //         isIconBtn: false,
-                //         onClick: onGetOTP,
-                //         width: 0.4,
-                //       ),
-                // //   ],
-                // // ),
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      requestedToGetOTP == true
+                          ? TextBox(innerTxt: ' OTP')
+                          : TextBox(innerTxt: ' Email Address'),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                requestedToGetOTP == true
+                    ? TxtButton(
+                        buttonText: "Verify OTP",
+                        btnColor: const Color.fromRGBO(240, 130, 0, 1),
+                        txtColor: Colors.white,
+                        borderColor: Colors.grey,
+                        isIconBtn: false,
+                        onClick: () {},
+                        width: 0.39,
+                      )
+                    : TxtButton(
+                        buttonText: "Get OTP",
+                        btnColor: const Color.fromRGBO(240, 130, 0, 1),
+                        txtColor: Colors.white,
+                        borderColor: Colors.grey,
+                        isIconBtn: false,
+                        onClick: onGetOTP,
+                        width: 0.4,
+                      ),
+                  ],
+                ),
 
                 const SizedBox(height: 50),
               ],
