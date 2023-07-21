@@ -84,77 +84,77 @@ class _Chat extends State<Chat> {
                     ],
                   ),
                   const SizedBox(height: 15),
-                  // Expanded(
-                  //   child: ListView.builder(
-                  //     reverse: true, // Start from the bottom
-                  //     itemCount: messages.length,
-                  //     itemBuilder: (context, index) {
-                  //       return Align(
-                  //           alignment: Alignment.centerRight,
-                  //           child: Column(
-                  //             children: [
-                  //               const SizedBox(
-                  //                 height: 10,
-                  //               ),
-                  //               Container(
-                  //                 margin: const EdgeInsets.only(
-                  //                   right: 3,
-                  //                 ),
-                  //                 padding: const EdgeInsets.only(
-                  //                   left: 8,
-                  //                   top: 4,
-                  //                   right: 8,
-                  //                   bottom: 4,
-                  //                 ),
-                  //                 decoration: BoxDecoration(
-                  //                   color: const Color.fromRGBO(240, 130, 0, 1),
-                  //                   borderRadius: BorderRadius.circular(15),
-                  //                 ),
-                  //                 child: Row(
-                  //                   mainAxisAlignment: MainAxisAlignment.end,
-                  //                   mainAxisSize: MainAxisSize.min,
-                  //                   children: [
-                  //                     Padding(
-                  //                       padding: const EdgeInsets.only(
-                  //                         left: 6,
-                  //                         top: 2,
-                  //                         bottom: 3,
-                  //                       ),
-                  //                       child: Text(
-                  //                         messages[index],
-                  //                         overflow: TextOverflow.ellipsis,
-                  //                         textAlign: TextAlign.left,
-                  //                         style: const TextStyle(
-                  //                           color: Colors.white,
-                  //                           letterSpacing: 0.75,
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                     const Padding(
-                  //                       padding: EdgeInsets.only(
-                  //                         left: 20,
-                  //                         top: 12,
-                  //                       ),
-                  //                       child: Text(
-                  //                         "1:24 PM",
-                  //                         overflow: TextOverflow.ellipsis,
-                  //                         textAlign: TextAlign.left,
-                  //                         style: TextStyle(
-                  //                           color: Colors.white,
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ));
-                  //       // ListTile(
-                  //       //   title: Text(messages[index]),
-                  //       // );
-                  //     },
-                  //   ),
-                  // ),
+                  Expanded(
+                    child: ListView.builder(
+                      reverse: true, // Start from the bottom
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        return Align(
+                            alignment: Alignment.centerRight,
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    right: 3,
+                                  ),
+                                  padding: const EdgeInsets.only(
+                                    left: 8,
+                                    top: 4,
+                                    right: 8,
+                                    bottom: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromRGBO(240, 130, 0, 1),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 6,
+                                          top: 2,
+                                          bottom: 3,
+                                        ),
+                                        child: Text(
+                                          messages[index],
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            letterSpacing: 0.75,
+                                          ),
+                                        ),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 20,
+                                          top: 12,
+                                        ),
+                                        child: Text(
+                                          "1:24 PM",
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ));
+                        // ListTile(
+                        //   title: Text(messages[index]),
+                        // );
+                      },
+                    ),
+                  ),
 
                   const Divider(height: 1.5),
                   Container(

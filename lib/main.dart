@@ -8,4 +8,3 @@ void main() async {
   await Firebase.initializeApp();
   return runApp(const Index());
 }
-
