@@ -1,13 +1,25 @@
 const Register = require("../model/register");
 const asyncWrapper = require("../middleware/asyncWrapper");
 const bcrypt = require("bcryptjs");
+const Otp = require("../model/otp");
+require('dotenv').config();
+const { google } = require('googleapis');
+var nodemailer = require('nodemailer');
+
+
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI)
+oAuth2Client.setCredentials({refresh_token:REFRESH_TOKEN});
 
 const createUser = asyncWrapper(async (req, res) => {
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
   const email = req.body.email;
   const tasks = await Register.findOne({ email: email });
-
   if (!tasks) {
     req.body.password = await bcrypt.hash(req.body.password, 12);
     const registerUser = await Register.create(req.body);
@@ -25,15 +37,17 @@ const createUser = asyncWrapper(async (req, res) => {
   }
 });
 
+
 const getUser = asyncWrapper(async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-
+  console.log(email);
+  console.log(password);
   const tasks = await Register.findOne({ email }).then((user) => {
     if (!user) {
-      res.status(404).json({ error: "User not found" });
+      res.status(404).json("User Not Found");
     }
-    bcrypt.compare(password, user.password, async (err, data) => {
+    bcrypt.compare(password, user?.password, async (err, data) => {
       //if error than throw error
       if (err) {
         res.send(402);
@@ -43,13 +57,91 @@ const getUser = asyncWrapper(async (req, res) => {
       if (data) {
         res.json(user);
       } else {
-        return res.status(401).json({ msg: "Invalid credential" });
+        return res.status(401).json({msgs:"Invalid Credentials"});
       }
     });
   });
 });
 
+const emailSend = asyncWrapper(async (req, res) => {
+  const data = await Register.findOne({email: req.body.email });
+  const response = {};
+
+  if(data){
+    let otpCode = Math.floor(100000 + Math.random() * 900000);
+    let otpData = new Otp({
+        email : req.body.email,
+        code : otpCode,
+        expireIn : new Date().getTime()+1000*180
+    });
+    let otpResponse = await otpData.save();
+    console.log(otpCode);
+   const data = sendMail(req.body.email,otpCode);
+   req.session.updateEmailPassword = req.body.email;
+   if(data){
+    res.json("Success");
+    }else{
+      return res.status(401).json({ msg: "Email Not send" });
+
+        
+    }
+
+    
+  }else{
+    req.flash('emailNotFound','Email Incorrect or Not Registered with us');
+    res.redirect('/reset-password');
+    // res.json({status:fail})
+    // res.status(401).json('Email not sent');
+
+  }
+
+})
+
+async function sendMail(email,Otp){
+  try{
+    const accessToken = await oAuth2Client.getAccessToken();
+
+    let transport = nodemailer.createTransport({
+      service: 'gmail',
+      port:465,
+      secure: true, // true for 465, false for other ports
+      logger: true,
+      debug: true,
+      secureConnection: true,
+      ignoreTLS: true, // add this 
+      auth: {
+        type: 'OAuth2',
+        user: "testinghappy.18@gmail.com",
+        clientId:CLIENT_ID,
+        clientSecret:CLIENT_SECRET,
+        accessToken:accessToken,
+        refreshToken:REFRESH_TOKEN
+      }
+
+    
+   });
+
+   const mailOptions = {
+    from: 'Aspiring-Minds <testinghappy.18@gmail.com>', // Cer address
+    to: email, // List of recipients
+    subject: 'OTP to reset Password', // Subject line
+    text: 'Hello from Aspiring Minds!', // Plain text body
+    html:'<h1>Hey !! </h1>'+ Otp + '<h1>  is  the otp to reset your password</h1>'
+  };
+
+ const result = await transport.sendMail(mailOptions);
+ return result;
+    
+  }catch(err){
+    console.log(err)
+    return err;
+  }
+}
+
+
+
+
 module.exports = {
-  getUser,
-  createUser,
+  getUser,createUser,emailSend,
+  //changePassword,updatePasswordGoogle
 };

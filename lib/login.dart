@@ -27,15 +27,56 @@ class _Login extends State<Login> {
     widget.switchScreen("forgot_password");
   }
 
+  bool isValidEmail(String email) {
+    // Regular expression pattern for a valid email address
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+    // Use the regex pattern to check if the email matches the valid format
+    return emailRegex.hasMatch(email);
+  }
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String demo = "";
   String email = "";
   String password = "";
   String errorMessage = "";
+
+  String _emailError = '';
+  String _passwordError = '';
+
   void _login() async {
     email = _emailController.text;
     password = _passwordController.text;
+
+    if (email == '') {
+      setState(() {
+        _emailError = 'Enter your Email';
+      });
+      return;
+    } else {
+      if (!isValidEmail(email)) {
+        setState(() {
+          _emailError = 'Enter your valid Email';
+        });
+        return;
+      } else {
+        setState(() {
+          _emailError = "";
+        });
+      }
+    }
+
+    if (password == '') {
+      setState(() {
+        _passwordError = "Enter Password";
+      });
+      return;
+    } else {
+      setState(() {
+        _passwordError = "";
+      });
+    }
 
     try {
       // Your API endpoint URL
@@ -43,9 +84,10 @@ class _Login extends State<Login> {
 
       // Data to be sent in the request body
       var data = {'email': email, 'password': password};
-
+      print(data);
       // Make the POST request to your Node.js backend
       http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+      print(response);
 
       // Process the responsel
       if (response.statusCode == 200) {
@@ -54,11 +96,11 @@ class _Login extends State<Login> {
         // final signUp = SignUpResponse.fromJson(jsonResponse);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('user_email', email);
-        prefs.setString(
-            'user_name', jsonResponse['firstname'] + jsonResponse['lastname']);
+        prefs.setString('user_name', jsonResponse['firstname']);
         widget.switchScreen("courses");
       } else if (response.statusCode == 404) {
         // User not found
+
         setState(() {
           errorMessage =
               'User not found. Please check your email and password.';
@@ -83,8 +125,7 @@ class _Login extends State<Login> {
 
   @override
   Widget build(context) {
-    return SizedBox(
-      width: double.infinity,
+    return SafeArea(
       child: Center(
         child: Container(
           width: MediaQuery.of(context).size.width * 0.80,
@@ -93,7 +134,6 @@ class _Login extends State<Login> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 30),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -109,7 +149,7 @@ class _Login extends State<Login> {
                 ),
                 Image.asset(
                   'assets/images/login_signup_logo.png',
-                  height: 250,
+                  height: 200,
                 ), // Replace with your image source
                 const SizedBox(height: 20),
                 const Row(
@@ -124,7 +164,7 @@ class _Login extends State<Login> {
                     )
                   ],
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -132,16 +172,18 @@ class _Login extends State<Login> {
                       TextBox(
                         customController: _emailController,
                         innerTxt: 'Email',
+                        errorText: _emailError == '' ? null : _emailError,
                       ),
                       // TextBox(innerTxt: ' Email Address'),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       TextBox(
                         customController: _passwordController,
                         innerTxt: 'Password',
+                        errorText: _passwordError == '' ? null : _passwordError,
                         isPassword: true,
                       ),
                       // TextBox(innerTxt: ' Password'),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
