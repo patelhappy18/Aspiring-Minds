@@ -46,6 +46,9 @@ class __Index extends State<Index> {
       if (screenName == "forgot_password") {
         activeScreen = ForgotPassword(switchScreen);
       }
+      if (screenName == "course_details") {
+        activeScreen = CourseHomePage(switchScreen);
+      }
     });
   }
 

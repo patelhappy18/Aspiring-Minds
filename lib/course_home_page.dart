@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import "package:aspirant_minds/buttons_UI/custom_back_button.dart";
 import 'package:aspirant_minds/bottom_bar/custom_bottom_bar.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class CourseHomePage extends StatefulWidget {
   const CourseHomePage(this.switchScreen, {super.key});
@@ -14,15 +17,35 @@ class CourseHomePage extends StatefulWidget {
 }
 
 class _CourseHomePage extends State<CourseHomePage> {
+  dynamic course = {};
+  @override
+  void initState() {
+    super.initState();
+    print("In page");
+    getCourseDetails();
+  }
+
   void onBtnPress() {
-    widget.switchScreen("home");
+    widget.switchScreen("courses");
   }
 
   void onModulePurchase(String module) {
     print(module);
   }
 
-  bool _customTileExpanded = false;
+  void getCourseDetails() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // print(prefs.getString('course') ?? " not");
+
+      setState(() {
+        course = json.decode(prefs.getString('course') ?? " ");
+      });
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(context) {
@@ -51,9 +74,9 @@ class _CourseHomePage extends State<CourseHomePage> {
                           ),
                           onClick: onBtnPress,
                         ),
-                        const Text(
-                          "Course Name",
-                          style: TextStyle(
+                        Text(
+                          course['title'],
+                          style: const TextStyle(
                               fontSize: 24, fontWeight: FontWeight.w900),
                         ),
                         Image.asset(
@@ -68,21 +91,17 @@ class _CourseHomePage extends State<CourseHomePage> {
                     const SizedBox(height: 10),
                     // TextBox(innerTxt: ' Search', iconStart: Icon(Icons.search)),
                     const SizedBox(height: 15),
-                    Positioned(
-                      left: 42,
-                      top: 114,
-                      child: Container(
-                        width: 341,
-                        height: 205,
-                        decoration: ShapeDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage(
-                                "assets/images/course_home_page/main_photo.png"),
-                            fit: BoxFit.fill,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
+                    Container(
+                      width: 341,
+                      height: 205,
+                      decoration: ShapeDecoration(
+                        image: const DecorationImage(
+                          image: AssetImage(
+                              "assets/images/course_home_page/main_photo.png"),
+                          fit: BoxFit.fill,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
                         ),
                       ),
                     ),
@@ -93,30 +112,30 @@ class _CourseHomePage extends State<CourseHomePage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Flutter with UX/UI course",
-                          style: TextStyle(
+                        Text(
+                          course['title'] ?? " ",
+                          style: const TextStyle(
                               fontSize: 21, fontWeight: FontWeight.w900),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Column(
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
-                                    Text(
+                                    const Text(
                                       "Created By",
                                       style: TextStyle(fontSize: 19),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     Text(
-                                      "Author",
-                                      style: TextStyle(
+                                      course['author'] ?? " ",
+                                      style: const TextStyle(
                                         fontSize: 19,
                                         color: Color(0xFFF08200),
                                       ),
@@ -125,13 +144,15 @@ class _CourseHomePage extends State<CourseHomePage> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.star,
                                       color: Color(0xFFF08200),
                                     ),
                                     Text(
-                                      "4.5",
-                                      style: TextStyle(
+                                      course['rating'] != null
+                                          ? course['rating'].toString()
+                                          : " ",
+                                      style: const TextStyle(
                                         fontSize: 19,
                                         color: Color(0xFFF08200),
                                       ),
@@ -155,9 +176,11 @@ class _CourseHomePage extends State<CourseHomePage> {
                                   ),
                                 ),
                               ),
-                              child: const Text(
-                                "Buy at \$\45",
-                                style: TextStyle(
+                              child: Text(
+                                course['rating'] != null
+                                    ? "Buy at \$ ${course['price'].toString()}"
+                                    : " ",
+                                style: const TextStyle(
                                     fontSize: 15.0,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w800),

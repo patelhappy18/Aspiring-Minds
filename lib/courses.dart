@@ -5,6 +5,9 @@ import "package:flutter/material.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class Courses extends StatefulWidget {
   const Courses(this.switchScreen, {super.key});
@@ -40,11 +43,13 @@ class BottomMenuModel {
 
 class _Courses extends State<Courses> {
   String userName = '';
+  List courses = [];
   @override
   void initState() {
     super.initState();
     // Call the function when the page is initialized
     getUserName();
+    getCourses();
   }
 
   Future<void> getUserName() async {
@@ -57,6 +62,34 @@ class _Courses extends State<Courses> {
 
   void onBtnPress() {
     widget.switchScreen("home");
+  }
+
+  void onSelectCourse(dynamic selectedCourse) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('course', jsonEncode(selectedCourse));
+    widget.switchScreen("course_details");
+  }
+
+  void getCourses() async {
+    try {
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/courses';
+
+      // Make the POST request to your Node.js backend
+      http.Response response = await http.get(Uri.parse(apiUrl));
+
+      // Process the responsel
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        setState(() {
+          courses = jsonResponse;
+        });
+        print(courses[0]['title']);
+      }
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
   }
 
   @override
@@ -85,10 +118,10 @@ class _Courses extends State<Courses> {
                           children: [
                             Text(
                               userName,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.w900),
                             ),
-                            Text(
+                            const Text(
                               "Let’s upgrade your skill!",
                               style: TextStyle(fontSize: 20),
                             ),
@@ -138,68 +171,75 @@ class _Courses extends State<Courses> {
                             crossAxisSpacing: 31,
                           ),
                           physics: const BouncingScrollPhysics(),
-                          itemCount: 10,
+                          itemCount: courses.length,
                           itemBuilder: (context, index) {
-                            return Card(
-                              elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: Theme.of(context).colorScheme.outline,
+                            return GestureDetector(
+                              onTap: () {
+                                onSelectCourse(courses[index]);
+                              },
+                              child: Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(20)),
                                 ),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(20)),
-                              ),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(
-                                      20,
-                                    ),
-                                    topRight: Radius.circular(
-                                      20,
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(
+                                        20,
+                                      ),
+                                      topRight: Radius.circular(
+                                        20,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/coursethumbnail.png',
-                                      height: 121,
-                                      width: 156,
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 17,
-                                        top: 7,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/coursethumbnail.png',
+                                        height: 121,
+                                        width: 156,
                                       ),
-                                      child: Text(
-                                        "Coding",
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            letterSpacing: 0.8,
-                                            fontWeight: FontWeight.w900),
-                                      ),
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 17,
-                                        // bottom: 10,
-                                      ),
-                                      child: Text(
-                                        "18 Courses",
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          letterSpacing: 0.5,
-                                          fontSize: 12,
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 17,
+                                          top: 7,
+                                        ),
+                                        child: Text(
+                                          courses[index]['title'],
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                              letterSpacing: 0.8,
+                                              fontWeight: FontWeight.w900),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 17,
+                                          // bottom: 10,
+                                        ),
+                                        child: Text(
+                                          "${courses[index]['modules'].length} Modules",
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            letterSpacing: 0.5,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
