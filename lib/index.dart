@@ -1,3 +1,6 @@
+import 'package:aspirant_minds/chats.dart';
+import 'package:aspirant_minds/explore.dart';
+import 'package:aspirant_minds/forgot_password.dart';
 import 'package:aspirant_minds/login.dart';
 import 'package:aspirant_minds/other_user_profile.dart';
 import 'package:aspirant_minds/profile.dart';
@@ -26,6 +29,7 @@ class __Index extends State<Index> {
 
   void switchScreen(String screenName) {
     setState(() {
+      print(screenName);
       if (screenName == "register") {
         activeScreen = Register(switchScreen);
       }

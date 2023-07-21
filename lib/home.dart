@@ -146,17 +146,3 @@ class Home extends StatelessWidget {
     );
   }
 }
-
-class Person {
-  final String name;
-  final int age;
-
-  Person({required this.name, required this.age});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'age': age,
-    };
-  }
-}

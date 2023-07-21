@@ -18,6 +18,12 @@ class _CourseHomePage extends State<CourseHomePage> {
     widget.switchScreen("home");
   }
 
+  void onModulePurchase(String module) {
+    print(module);
+  }
+
+  bool _customTileExpanded = false;
+
   @override
   Widget build(context) {
     return SafeArea(
@@ -93,14 +99,29 @@ class _CourseHomePage extends State<CourseHomePage> {
                               fontSize: 21, fontWeight: FontWeight.w900),
                         ),
                         Row(
-                          // mainAxisSize: MainAxisSize.max,
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "Created By Author",
-                                  style: TextStyle(fontSize: 19),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Created By",
+                                      style: TextStyle(fontSize: 19),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Author",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        color: Color(0xFFF08200),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Row(
                                   children: [
@@ -147,91 +168,74 @@ class _CourseHomePage extends State<CourseHomePage> {
                       ],
                     ),
 
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8,
-                          right: 1,
-                        ),
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            mainAxisExtent: 176,
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 31,
-                            crossAxisSpacing: 31,
-                          ),
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(20)),
-                              ),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(
-                                      20,
-                                    ),
-                                    topRight: Radius.circular(
-                                      20,
-                                    ),
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/coursethumbnail.png',
-                                      height: 121,
-                                      width: 156,
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 17,
-                                        top: 7,
-                                      ),
-                                      child: Text(
-                                        "Coding",
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            letterSpacing: 0.8,
-                                            fontWeight: FontWeight.w900),
-                                      ),
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 17,
-                                        // bottom: 10,
-                                      ),
-                                      child: Text(
-                                        "18 Courses",
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          letterSpacing: 0.5,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                    // Expanded(
+                    //   child: Container(
+                    //     decoration: BoxDecoration(
+                    //       color: const Color(0xFFF6F6F6),
+                    //       borderRadius: BorderRadius.circular(25),
+                    //     ),
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(8),
+                    //       child: ListView.separated(
+                    //         itemCount: 25,
+                    //         separatorBuilder:
+                    //             (BuildContext context, int index) =>
+                    //                 const Divider(),
+                    //         itemBuilder: (BuildContext context, int index) {
+                    //           return Container(
+                    //             decoration: BoxDecoration(
+                    //               color: Colors.white,
+                    //               borderRadius: BorderRadius.circular(15),
+                    //             ),
+                    //             child: ExpansionTile(
+                    //               title: const Row(
+                    //                 mainAxisAlignment:
+                    //                     MainAxisAlignment.spaceBetween,
+                    //                 children: [
+                    //                   Text(
+                    //                     'Module 1',
+                    //                     style: TextStyle(
+                    //                       fontWeight: FontWeight.w800,
+                    //                     ),
+                    //                   ),
+                    //                   Text(
+                    //                     '\$\4',
+                    //                     style: TextStyle(
+                    //                       color: Color.fromRGBO(240, 130, 0, 1),
+                    //                       fontWeight: FontWeight.w800,
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //               children: <Widget>[
+                    //                 const ListTile(
+                    //                   title: Text('1. Introduction'),
+                    //                 ),
+                    //                 const ListTile(
+                    //                   title: Text('2. What is UX/UI?'),
+                    //                 ),
+                    //                 const ListTile(
+                    //                   title: Text('3. Importance of is UX/UI?'),
+                    //                 ),
+                    //                 ElevatedButton(
+                    //                     onPressed: () {
+                    //                       onModulePurchase("module1");
+                    //                     },
+                    //                     style: ElevatedButton.styleFrom(
+                    //                       minimumSize:
+                    //                           const Size.fromHeight(40),
+                    //                       backgroundColor: const Color.fromRGBO(
+                    //                           240, 130, 0, 1),
+                    //                     ),
+                    //                     child: const Text("Purchase "))
+                    //               ],
+                    //             ),
+                    //           );
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
