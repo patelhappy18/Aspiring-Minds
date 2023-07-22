@@ -5,6 +5,8 @@ import 'package:aspirant_minds/tabbar_component/tabbar_component.dart';
 import "package:flutter/material.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class Profile extends StatefulWidget {
   Profile(this.switchScreen, {super.key, required this.pageName});
@@ -49,6 +51,11 @@ class _Profile extends State<Profile> {
 
   void onBtnPress() {
     widget.switchScreen("home");
+  }
+
+  Future<void> clearSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 
   @override
@@ -109,6 +116,7 @@ class _Profile extends State<Profile> {
                             ),
                             ElevatedButton(
                               onPressed: () {
+                                clearSharedPreferences();
                                 widget.switchScreen("login");
                               },
                               style: ButtonStyle(
