@@ -7,8 +7,9 @@ import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 
 class OtherUserProfile extends StatefulWidget {
-  OtherUserProfile(this.switchScreen, {super.key});
+  OtherUserProfile(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override
@@ -359,7 +360,8 @@ class _OtherUserProfile extends State<OtherUserProfile> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
+        bottomNavigationBar:
+            CustomBottomBar(widget.switchScreen, pageName: widget.pageName),
       ),
     );
   }

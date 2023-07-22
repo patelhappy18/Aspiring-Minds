@@ -3,8 +3,9 @@ import 'package:aspirant_minds/profile.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomBar extends StatefulWidget {
-  const CustomBottomBar(this.switchScreen, {super.key});
+  const CustomBottomBar(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override
@@ -15,6 +16,41 @@ class CustomBottomBarState extends State<CustomBottomBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setActivePage();
+  }
+
+  void setActivePage() {
+    switch (widget.pageName) {
+      case "courses":
+        setState(() {
+          _selectedIndex = 0;
+        });
+        break;
+
+      case "chat_list":
+        setState(() {
+          _selectedIndex = 1;
+        });
+        break;
+
+      case "explore":
+        setState(() {
+          _selectedIndex = 2;
+        });
+        break;
+
+      case "user_profile":
+        setState(() {
+          _selectedIndex = 3;
+        });
+        break;
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {

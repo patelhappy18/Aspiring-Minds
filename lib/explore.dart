@@ -6,8 +6,9 @@ import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 
 class Explore extends StatefulWidget {
-  const Explore(this.switchScreen, {super.key});
+  const Explore(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override
@@ -341,7 +342,8 @@ class _Explore extends State<Explore> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
+        bottomNavigationBar:
+            CustomBottomBar(widget.switchScreen, pageName: widget.pageName),
       ),
     );
   }

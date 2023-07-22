@@ -8,8 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class Login extends StatefulWidget {
-  const Login(this.switchScreen, {super.key});
+  const Login(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override

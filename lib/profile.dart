@@ -7,8 +7,9 @@ import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 
 class Profile extends StatefulWidget {
-  Profile(this.switchScreen, {super.key});
+  Profile(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override
@@ -92,19 +93,44 @@ class _Profile extends State<Profile> {
                           width: 100,
                         ),
                         const SizedBox(width: 15),
-                        const Column(
+                        Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "John Wick",
                               style: TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.w900),
                             ),
-                            Text(
+                            const Text(
                               "john@gmail.com",
                               style: TextStyle(fontSize: 16),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                widget.switchScreen("login");
+                              },
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        const Color.fromARGB(255, 240, 68, 0)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                    side: const BorderSide(
+                                        color: Color.fromRGBO(240, 130, 0, 1)),
+                                  ),
+                                ),
+                              ),
+                              child: const Text(
+                                "Logout",
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800),
+                              ),
                             ),
                           ],
                         ),
@@ -360,7 +386,10 @@ class _Profile extends State<Profile> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
+        bottomNavigationBar: CustomBottomBar(
+          widget.switchScreen,
+          pageName: widget.pageName,
+        ),
       ),
     );
   }

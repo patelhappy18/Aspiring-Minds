@@ -9,8 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class ChatList extends StatefulWidget {
-  const ChatList(this.switchScreen, {super.key});
+  const ChatList(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override
@@ -133,7 +134,8 @@ class _ChatList extends State<ChatList> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
+        bottomNavigationBar:
+            CustomBottomBar(widget.switchScreen, pageName: widget.pageName),
       ),
     );
   }

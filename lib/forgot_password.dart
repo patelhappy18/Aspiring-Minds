@@ -8,8 +8,9 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword(this.switchScreen, {super.key});
+  const ForgotPassword(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override

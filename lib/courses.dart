@@ -9,8 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class Courses extends StatefulWidget {
-  const Courses(this.switchScreen, {super.key});
+  const Courses(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override
@@ -252,7 +253,8 @@ class _Courses extends State<Courses> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
+        bottomNavigationBar:
+            CustomBottomBar(widget.switchScreen, pageName: widget.pageName),
       ),
     );
   }

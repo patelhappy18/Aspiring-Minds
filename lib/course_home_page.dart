@@ -6,8 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class CourseHomePage extends StatefulWidget {
-  const CourseHomePage(this.switchScreen, {super.key});
+  const CourseHomePage(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override
@@ -259,7 +260,8 @@ class _CourseHomePage extends State<CourseHomePage> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
+        bottomNavigationBar:
+            CustomBottomBar(widget.switchScreen, pageName: widget.pageName),
       ),
     );
   }

@@ -25,7 +25,7 @@ class __Index extends State<Index> {
 
   @override
   void initState() {
-    activeScreen = Home(switchScreen);
+    activeScreen = Home(switchScreen, pageName: "home");
     super.initState();
   }
 
@@ -33,34 +33,38 @@ class __Index extends State<Index> {
     setState(() {
       print(screenName);
       if (screenName == "register") {
-        activeScreen = Register(switchScreen);
+        activeScreen = Register(switchScreen, pageName: "register");
       }
       if (screenName == "home") {
-        activeScreen = Home(switchScreen);
+        activeScreen = Home(switchScreen, pageName: "home");
       }
       if (screenName == "login") {
-        activeScreen = Login(switchScreen);
+        activeScreen = Login(switchScreen, pageName: "login");
       }
       if (screenName == "courses") {
-        activeScreen = Courses(switchScreen);
+        activeScreen = Courses(switchScreen, pageName: "courses");
       }
       if (screenName == "forgot_password") {
-        activeScreen = ForgotPassword(switchScreen);
+        activeScreen =
+            ForgotPassword(switchScreen, pageName: "forgot_password");
       }
       if (screenName == "course_details") {
-        activeScreen = CourseHomePage(switchScreen);
+        activeScreen = CourseHomePage(switchScreen, pageName: "course_details");
       }
       if (screenName == "explore") {
-        activeScreen = Explore(switchScreen);
+        activeScreen = Explore(switchScreen, pageName: "explore");
       }
       if (screenName == "user_profile") {
-        activeScreen = Profile(switchScreen);
+        activeScreen = Profile(switchScreen, pageName: "user_profile");
       }
       if (screenName == "chat_list") {
-        activeScreen = ChatList(switchScreen);
+        activeScreen = ChatList(switchScreen, pageName: "chat_list");
       }
       if (screenName == "chat") {
-        activeScreen = Chat(switchScreen);
+        activeScreen = Chat(switchScreen, pageName: "chat");
+      }
+      if (screenName == "other_user_profile") {
+        activeScreen = OtherUserProfile(switchScreen, pageName: "chat");
       }
     });
   }
