@@ -118,7 +118,7 @@ class _ForgotPassword extends State<ForgotPassword> {
 
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.body);
-          widget.switchScreen("courses");
+          widget.switchScreen("login");
         } else {
           setState(() {
             _Error = 'Something went wrong try again later';

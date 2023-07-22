@@ -19,6 +19,8 @@ class CourseHomePage extends StatefulWidget {
 
 class _CourseHomePage extends State<CourseHomePage> {
   dynamic course = {};
+  String userId = "";
+  bool isPurchased = false;
   @override
   void initState() {
     super.initState();
@@ -34,10 +36,51 @@ class _CourseHomePage extends State<CourseHomePage> {
     print(module);
   }
 
+  void purchaseCourse() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/users/${userId}/purchased-course';
+      // Make the POST request to your Node.js backend
+      http.Response response =
+          await http.post(Uri.parse(apiUrl), body: {"courseId": course["_id"]});
+
+      // Process the responsel
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse["_id"] != null) {
+          prefs.setString(
+            'user_purchased_courses',
+            json.encode(
+              jsonResponse["purchasedCourses"],
+            ),
+          );
+          setState(() {
+            isPurchased = true;
+          });
+        }
+      }
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
+  }
+
   Future<void> getCourse() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       course = json.decode(prefs.getString('course') ?? " ");
+      userId = prefs.getString('user_id') ?? "";
+      var purchased_courses =
+          json.decode(prefs.getString('user_purchased_courses') ?? "");
+      print(prefs.getString('user_purchased_courses'));
+      if (purchased_courses.contains(course["_id"])) {
+        setState(() {
+          isPurchased = true;
+        });
+        print(isPurchased);
+      }
     });
     // Do something with the user's email...
   }
@@ -156,31 +199,40 @@ class _CourseHomePage extends State<CourseHomePage> {
                                 ),
                               ],
                             ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        const Color.fromRGBO(240, 130, 0, 1)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50),
-                                    side: const BorderSide(
-                                        color: Color.fromRGBO(240, 130, 0, 1)),
+                            isPurchased
+                                ? const SizedBox(
+                                    width: 10,
+                                  )
+                                : ElevatedButton(
+                                    onPressed: () {
+                                      purchaseCourse();
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              const Color.fromRGBO(
+                                                  240, 130, 0, 1)),
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          side: const BorderSide(
+                                              color: Color.fromRGBO(
+                                                  240, 130, 0, 1)),
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      course['rating'] != null
+                                          ? "Buy at \$ ${course['price'].toString()}"
+                                          : " ",
+                                      style: const TextStyle(
+                                          fontSize: 15.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              child: Text(
-                                course['rating'] != null
-                                    ? "Buy at \$ ${course['price'].toString()}"
-                                    : " ",
-                                style: const TextStyle(
-                                    fontSize: 15.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800),
-                              ),
-                            ),
                           ],
                         ),
                       ],

@@ -127,12 +127,14 @@ class _Register extends State<Register> {
         // Successful response from the backend
         String userEmail =
             'example@example.com'; // Replace with actual user email
-
+        final jsonResponse = json.decode(response.body);
         // Save user email in shared_preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('user_email', email);
         prefs.setString('user_name', firstname);
-
+        prefs.setString('user_id', jsonResponse['_id']);
+        prefs.setString('user_purchased_courses',
+            json.encode(jsonResponse["purchasedCourses"]));
         widget.switchScreen("courses");
       } else {
         // Error response from the backend

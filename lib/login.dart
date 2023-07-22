@@ -98,6 +98,9 @@ class _Login extends State<Login> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('user_email', email);
         prefs.setString('user_name', jsonResponse['firstname']);
+        prefs.setString('user_id', jsonResponse['_id']);
+        prefs.setString('user_purchased_courses',
+            json.encode(jsonResponse["purchasedCourses"]));
         widget.switchScreen("courses");
       } else if (response.statusCode == 404) {
         // User not found
