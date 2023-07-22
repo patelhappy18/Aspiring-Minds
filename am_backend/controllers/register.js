@@ -179,6 +179,34 @@ const updatePasswordGoogle = asyncWrapper(async (req, res) => {
   res.json("Success");
 });
 
+const purchasedCourse = asyncWrapper(async (req, res) => {
+  const userId = req.params.userId;
+  const courseId = req.body.courseId;
+
+  Register.findById(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      user.purchasedCourses.push(courseId);
+
+      user
+        .save()
+        .then((savedUser) => {
+          res.status(200).json(savedUser);
+        })
+        .catch((error) => {
+          res
+            .status(500)
+            .json({ error: "Failed to add course to purchasedCourses" });
+        });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Failed to find user" });
+    });
+});
+
 module.exports = {
   getUser,
   createUser,
@@ -186,4 +214,5 @@ module.exports = {
   changePassword,
   updatePasswordGoogle,
   searchUsers,
+  purchasedCourse,
 };
