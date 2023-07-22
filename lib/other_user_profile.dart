@@ -359,7 +359,7 @@ class _OtherUserProfile extends State<OtherUserProfile> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(),
+        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
       ),
     );
   }

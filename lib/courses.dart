@@ -4,7 +4,6 @@ import "package:aspirant_minds/buttons_UI/custom_icon_button.dart";
 import "package:flutter/material.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -253,7 +252,7 @@ class _Courses extends State<Courses> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(),
+        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
       ),
     );
   }

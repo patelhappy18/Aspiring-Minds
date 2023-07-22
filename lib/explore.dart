@@ -341,7 +341,7 @@ class _Explore extends State<Explore> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(),
+        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
       ),
     );
   }

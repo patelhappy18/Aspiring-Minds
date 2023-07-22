@@ -22,7 +22,7 @@ class _CourseHomePage extends State<CourseHomePage> {
   void initState() {
     super.initState();
     print("In page");
-    getCourseDetails();
+    getCourse();
   }
 
   void onBtnPress() {
@@ -33,18 +33,12 @@ class _CourseHomePage extends State<CourseHomePage> {
     print(module);
   }
 
-  void getCourseDetails() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      // print(prefs.getString('course') ?? " not");
-
-      setState(() {
-        course = json.decode(prefs.getString('course') ?? " ");
-      });
-    } catch (e) {
-      // Error occurred during the API request
-      print('Error: $e');
-    }
+  Future<void> getCourse() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      course = json.decode(prefs.getString('course') ?? " ");
+    });
+    // Do something with the user's email...
   }
 
   @override
@@ -265,7 +259,7 @@ class _CourseHomePage extends State<CourseHomePage> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(),
+        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
       ),
     );
   }

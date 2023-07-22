@@ -1,3 +1,4 @@
+import 'package:aspirant_minds/chat_list.dart';
 import 'package:aspirant_minds/chats.dart';
 import 'package:aspirant_minds/explore.dart';
 import 'package:aspirant_minds/forgot_password.dart';
@@ -48,6 +49,18 @@ class __Index extends State<Index> {
       }
       if (screenName == "course_details") {
         activeScreen = CourseHomePage(switchScreen);
+      }
+      if (screenName == "explore") {
+        activeScreen = Explore(switchScreen);
+      }
+      if (screenName == "user_profile") {
+        activeScreen = Profile(switchScreen);
+      }
+      if (screenName == "chat_list") {
+        activeScreen = ChatList(switchScreen);
+      }
+      if (screenName == "chat") {
+        activeScreen = Chat(switchScreen);
       }
     });
   }

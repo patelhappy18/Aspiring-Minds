@@ -3,6 +3,10 @@ import 'package:aspirant_minds/profile.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomBar extends StatefulWidget {
+  const CustomBottomBar(this.switchScreen, {super.key});
+
+  final void Function(String screenName) switchScreen;
+
   @override
   CustomBottomBarState createState() => CustomBottomBarState();
 }
@@ -16,6 +20,24 @@ class CustomBottomBarState extends State<CustomBottomBar> {
     setState(() {
       _selectedIndex = index;
     });
+
+    switch (index) {
+      case 0:
+        widget.switchScreen("courses");
+        break;
+
+      case 1:
+        widget.switchScreen("chat_list");
+        break;
+
+      case 2:
+        widget.switchScreen("explore");
+        break;
+
+      case 3:
+        widget.switchScreen("user_profile");
+        break;
+    }
   }
 
   @override

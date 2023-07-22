@@ -360,7 +360,7 @@ class _Profile extends State<Profile> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(),
+        bottomNavigationBar: CustomBottomBar(widget.switchScreen),
       ),
     );
   }

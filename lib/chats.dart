@@ -4,6 +4,9 @@ import "package:aspirant_minds/buttons_UI/custom_icon_button.dart";
 import "package:flutter/material.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class Chat extends StatefulWidget {
   const Chat(this.switchScreen, {super.key});
@@ -38,8 +41,27 @@ class BottomMenuModel {
 }
 
 class _Chat extends State<Chat> {
+  String userName = "";
+  String chatId = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserName();
+  }
+
   void onBtnPress() {
-    widget.switchScreen("home");
+    widget.switchScreen("chat_list");
+  }
+
+  Future<void> getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var chatDetails = json.decode(prefs.getString('chat') ?? "");
+    setState(() {
+      userName = chatDetails["name"];
+      chatId = chatDetails["id"].toString();
+    });
+    // Do something with the user's email...
   }
 
   final List<String> messages = [];
@@ -71,9 +93,9 @@ class _Chat extends State<Chat> {
                         ),
                         onClick: onBtnPress,
                       ),
-                      const Text(
-                        "John Wick",
-                        style: TextStyle(
+                      Text(
+                        userName ?? "John Wick",
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w900),
                       ),
                       Image.asset(
@@ -155,7 +177,6 @@ class _Chat extends State<Chat> {
                       },
                     ),
                   ),
-
                   const Divider(height: 1.5),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
