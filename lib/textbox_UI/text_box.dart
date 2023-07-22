@@ -1,9 +1,22 @@
 import "package:flutter/material.dart";
 
 class TextBox extends StatelessWidget {
-  TextBox({super.key, required this.innerTxt});
+  TextBox({
+    super.key,
+    required this.innerTxt,
+    this.iconStart,
+    this.customController,
+    this.onSubmitted,
+    this.isPassword,
+    this.errorText,
+  });
 
+  final Icon? iconStart;
+  final bool? isPassword;
+  final String? errorText;
   String innerTxt;
+  final TextEditingController? customController;
+  final void Function(String)? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +27,13 @@ class TextBox extends StatelessWidget {
             0.14, // Adjust the width based on the screen size
         child: TextField(
           keyboardType: TextInputType.visiblePassword,
+          controller: customController,
+          onSubmitted: onSubmitted,
+          obscureText: isPassword ?? false,
           decoration: InputDecoration(
             hintText: innerTxt,
+            errorText: errorText ?? null,
+            prefixIcon: iconStart ?? null,
             // border: const OutlineInputBorder(),
             filled: true,
             fillColor: const Color.fromARGB(

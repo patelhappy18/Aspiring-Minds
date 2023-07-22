@@ -5,10 +5,12 @@ import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 import "package:http/http.dart" as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Register extends StatefulWidget {
-  const Register(this.switchScreen, {super.key});
+  const Register(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 
   @override
@@ -18,39 +20,135 @@ class Register extends StatefulWidget {
 }
 
 class _Register extends State<Register> {
-  String _responseData = '';
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _firstnameController = TextEditingController();
+  final _lastnameController = TextEditingController();
 
-  Future<void> fetchData() async {
-    var url = Uri.parse('http://localhost:8080/endpoint');
-
-    try {
-      var response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        var decodedData = json.decode(response.body);
-        setState(() {
-          _responseData = decodedData['message'];
-        });
-      } else {
-        setState(() {
-          _responseData = 'Error: ${response.statusCode}';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _responseData = 'Error: $e';
-      });
-    }
-  }
+  String _firstNameError = '';
+  String _lastNameError = '';
+  String _emailError = '';
+  String _passwordError = '';
 
   void onBtnPress() {
     widget.switchScreen("home");
   }
 
+  bool isValidEmail(String email) {
+    // Regular expression pattern for a valid email address
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+    // Use the regex pattern to check if the email matches the valid format
+    return emailRegex.hasMatch(email);
+  }
+
+  void _login() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    // Call the function to make the API request to your Node.js backend
+  }
+
+  Future<void> registerUser() async {
+    String demo = "";
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    String firstname = _firstnameController.text;
+    String lastname = _lastnameController.text;
+
+    if (firstname == '') {
+      setState(() {
+        _firstNameError = "Enter First Name";
+      });
+      return;
+    } else {
+      setState(() {
+        _firstNameError = "";
+      });
+    }
+
+    if (lastname == '') {
+      setState(() {
+        _lastNameError = "Enter Last Name";
+      });
+      return;
+    } else {
+      setState(() {
+        _lastNameError = "";
+      });
+    }
+
+    if (email == '') {
+      setState(() {
+        _emailError = 'Enter your Email';
+      });
+      return;
+    } else {
+      if (!isValidEmail(email)) {
+        setState(() {
+          _emailError = 'Enter your valid Email';
+        });
+        return;
+      } else {
+        setState(() {
+          _emailError = "";
+        });
+      }
+    }
+
+    if (password == '') {
+      setState(() {
+        _passwordError = "Enter Password";
+      });
+      return;
+    } else {
+      setState(() {
+        _passwordError = "";
+      });
+    }
+
+    try {
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/users/registerNewUser';
+
+      // Data to be sent in the request body
+      var data = {
+        'email': email,
+        'password': password,
+        'firstname': firstname,
+        'lastname': lastname
+      };
+
+      // Make the POST request to your Node.js backend
+      http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+
+      // Process the response
+      if (response.statusCode == 200) {
+        // Successful response from the backend
+        String userEmail =
+            'example@example.com'; // Replace with actual user email
+        final jsonResponse = json.decode(response.body);
+        // Save user email in shared_preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('user_email', email);
+        prefs.setString('user_name', firstname);
+        prefs.setString('user_id', jsonResponse['_id']);
+        prefs.setString('user_purchased_courses',
+            json.encode(jsonResponse["purchasedCourses"]));
+        widget.switchScreen("courses");
+      } else {
+        // Error response from the backend
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
+  }
+
   @override
   Widget build(context) {
-    return SizedBox(
-      width: double.infinity,
+    return SafeArea(
       child: Center(
         child: Container(
           width: MediaQuery.of(context).size.width * 0.80,
@@ -59,7 +157,7 @@ class _Register extends State<Register> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 30),
+                const SizedBox(height: 0),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -75,9 +173,9 @@ class _Register extends State<Register> {
                 ),
                 Image.asset(
                   'assets/images/login_signup_logo.png',
-                  height: 250,
+                  height: 240,
                 ), // Replace with your image source
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 const Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -90,19 +188,39 @@ class _Register extends State<Register> {
                     )
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 5),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      TextBox(innerTxt: ' First Name'),
+                      TextBox(
+                        customController: _firstnameController,
+                        innerTxt: "FirstName",
+                        errorText:
+                            _firstNameError == '' ? null : _firstNameError,
+                      ),
                       const SizedBox(height: 5),
-                      TextBox(innerTxt: ' Last Name'),
+                      TextBox(
+                        customController: _lastnameController,
+                        innerTxt: 'LastName',
+                        errorText: _lastNameError == '' ? null : _lastNameError,
+                      ),
                       const SizedBox(height: 5),
-                      TextBox(innerTxt: ' Email Address'),
+                      TextBox(
+                        customController: _emailController,
+                        innerTxt: 'Email',
+                        errorText: _emailError == '' ? null : _emailError,
+                      ),
+                      // TextBox(innerTxt: ' Email Address'),
                       const SizedBox(height: 5),
-                      TextBox(innerTxt: ' Password'),
-                      const SizedBox(height: 5),
+                      TextBox(
+                        customController: _passwordController,
+                        innerTxt: 'Password',
+                        errorText: _passwordError == '' ? null : _passwordError,
+                        isPassword: true,
+                      ),
+                      // TextBox(innerTxt: ' Password'),
+
                       const Text(
                           "By signing up, you agree to our Terms & Conditions and Privacy Policy"),
                     ],
@@ -115,7 +233,7 @@ class _Register extends State<Register> {
                   txtColor: Colors.white,
                   borderColor: Colors.grey,
                   isIconBtn: false,
-                  onClick: fetchData,
+                  onClick: registerUser,
                   width: 0.4,
                 ),
 
@@ -142,7 +260,7 @@ class _Register extends State<Register> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 const CustomIconButton(
                   buttonText: 'Sign up with Google',
                   iconPath: 'assets/images/google_icon.png',
@@ -150,7 +268,7 @@ class _Register extends State<Register> {
                   btnColor: Colors.black,
                   borderColor: Colors.grey,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 5),
               ],
             ),
           ),

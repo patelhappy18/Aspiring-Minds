@@ -6,8 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class Home extends StatelessWidget {
-  const Home(this.switchScreen, {super.key});
+  const Home(this.switchScreen, {super.key, required this.pageName});
 
+  final String pageName;
   final void Function(String screenName) switchScreen;
 ////value of this.startQuiz will be directly assigned to startQuiz
 //The reason why you cannot access the constructor arguments directly outside the constructor is because they are local variables within the constructor's scope. Once the constructor finishes executing and the object is created, these arguments are no longer accessible from outside the object.
@@ -144,19 +145,5 @@ class Home extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class Person {
-  final String name;
-  final int age;
-
-  Person({required this.name, required this.age});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'age': age,
-    };
   }
 }
