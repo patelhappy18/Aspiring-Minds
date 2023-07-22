@@ -195,7 +195,7 @@ class _CourseHomePage extends State<CourseHomePage> {
                         child: Padding(
                           padding: const EdgeInsets.all(8),
                           child: ListView.separated(
-                            itemCount: 25,
+                            itemCount: course['modules'].length,
                             separatorBuilder:
                                 (BuildContext context, int index) =>
                                     const Divider(),
@@ -206,19 +206,19 @@ class _CourseHomePage extends State<CourseHomePage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: ExpansionTile(
-                                  title: const Row(
+                                  title: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Module 1',
-                                        style: TextStyle(
+                                        course['modules'][index]["name"],
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
                                       Text(
-                                        '\$\4',
-                                        style: TextStyle(
+                                        '\$\ ${course['modules'][index]['module_price'].toString()}',
+                                        style: const TextStyle(
                                           color: Color.fromRGBO(240, 130, 0, 1),
                                           fontWeight: FontWeight.w800,
                                         ),
@@ -226,18 +226,24 @@ class _CourseHomePage extends State<CourseHomePage> {
                                     ],
                                   ),
                                   children: <Widget>[
-                                    const ListTile(
-                                      title: Text('1. Introduction'),
-                                    ),
-                                    const ListTile(
-                                      title: Text('2. What is UX/UI?'),
-                                    ),
-                                    const ListTile(
-                                      title: Text('3. Importance of is UX/UI?'),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: course['modules'][index]
+                                              ["items"]
+                                          .length,
+                                      itemBuilder:
+                                          (BuildContext context1, int index1) {
+                                        return ListTile(
+                                          title: Text("${index1 + 1}. " +
+                                              course['modules'][index]["items"]
+                                                  [index1]),
+                                        );
+                                      },
                                     ),
                                     ElevatedButton(
                                         onPressed: () {
-                                          onModulePurchase("module1");
+                                          onModulePurchase(
+                                              course['modules'][index]["name"]);
                                         },
                                         style: ElevatedButton.styleFrom(
                                           minimumSize:
