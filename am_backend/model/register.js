@@ -14,7 +14,7 @@ const TaskSchema = new mongoose.Schema({
     trim: true,
     maxlength: [100, "Cannot be more than 20 characters"],
   },
-  
+
   firstname: {
     type: String,
     trim: true,
@@ -23,7 +23,12 @@ const TaskSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
- 
+  purchasedCourses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course", // This refers to the Course model
+    },
+  ],
 });
 
 module.exports = mongoose.model("Register", TaskSchema); //This name is used with adding 's' behind the name for naming the collection
