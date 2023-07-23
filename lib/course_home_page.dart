@@ -19,13 +19,15 @@ class CourseHomePage extends StatefulWidget {
 
 class _CourseHomePage extends State<CourseHomePage> {
   dynamic course = {};
-  String userId = "";
+  String? userId = "";
   bool isPurchased = false;
+  List purchasedModules = [];
+
   @override
   void initState() {
     super.initState();
     print("In page");
-    getCourse();
+    // getCourse();
   }
 
   void onBtnPress() {
@@ -35,6 +37,32 @@ class _CourseHomePage extends State<CourseHomePage> {
   void onModulePurchase(String module) {
     print(module);
   }
+
+  // Future<void> getCourse() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  //   course = json.decode(prefs.getString('course') ?? " ");
+  //   userId = prefs.getString('user_id') ?? "";
+  //   var purchased_courses =
+  //       json.decode(prefs.getString('user_purchased_courses') ?? "");
+  //   var purchased_modules =
+  //       json.decode(prefs.getString('user_purchased_modules') ?? "");
+  //   // print(prefs.getString('user_purchased_modules'));
+
+  //   if (purchased_courses.contains(course["_id"])) {
+  //     setState(() {
+  //       isPurchased = true;
+  //     });
+  //   }
+  //   setState(() {
+  //     purchasedModules = purchased_modules;
+  //   });
+  //   print(purchasedModules);
+  //   print(course['modules'][0]["_id"]);
+  //   print(purchasedModules.contains(course['modules'][0]["_id"]));
+
+  //   // Do something with the user's email...
+  // }
 
   void purchaseCourse() async {
     try {
@@ -67,22 +95,65 @@ class _CourseHomePage extends State<CourseHomePage> {
     }
   }
 
-  Future<void> getCourse() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      course = json.decode(prefs.getString('course') ?? " ");
-      userId = prefs.getString('user_id') ?? "";
-      var purchased_courses =
-          json.decode(prefs.getString('user_purchased_courses') ?? "");
-      print(prefs.getString('user_purchased_courses'));
-      if (purchased_courses.contains(course["_id"])) {
-        setState(() {
-          isPurchased = true;
-        });
-        print(isPurchased);
+  void purchasedModule(String moduleId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/users/${userId}/purchased-module';
+      // Make the POST request to your Node.js backend
+      http.Response response =
+          await http.post(Uri.parse(apiUrl), body: {"moduleId": moduleId});
+
+      // Process the responsel
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse["_id"] != null) {
+          prefs.setString(
+            'user_purchased_modules',
+            json.encode(
+              jsonResponse["purchasedModules"],
+            ),
+          );
+
+          setState(() {
+            purchasedModules = jsonResponse["purchasedModules"];
+          });
+          List boughtModules = [];
+          for (var courseModule in course['modules']) {
+            if (purchasedModules.contains(courseModule["_id"])) {
+              boughtModules.add(courseModule);
+            }
+          }
+          if (boughtModules.length == course['modules'].length) {
+            String apiUrl =
+                'http://localhost:8000/users/${userId}/purchased-course';
+            // Make the POST request to your Node.js backend
+            http.Response response = await http
+                .post(Uri.parse(apiUrl), body: {"courseId": course["_id"]});
+
+            // Process the responsel
+            if (response.statusCode == 200) {
+              final jsonResponse = json.decode(response.body);
+              if (jsonResponse["_id"] != null) {
+                prefs.setString(
+                  'user_purchased_courses',
+                  json.encode(
+                    jsonResponse["purchasedCourses"],
+                  ),
+                );
+                setState(() {
+                  isPurchased = true;
+                });
+              }
+            }
+          }
+        }
       }
-    });
-    // Do something with the user's email...
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
   }
 
   @override
@@ -292,18 +363,29 @@ class _CourseHomePage extends State<CourseHomePage> {
                                         );
                                       },
                                     ),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          onModulePurchase(
-                                              course['modules'][index]["name"]);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          minimumSize:
-                                              const Size.fromHeight(40),
-                                          backgroundColor: const Color.fromRGBO(
-                                              240, 130, 0, 1),
-                                        ),
-                                        child: const Text("Purchase "))
+                                    isPurchased
+                                        ? const SizedBox(
+                                            width: 10,
+                                          )
+                                        : purchasedModules.contains(
+                                                course['modules'][index]["_id"])
+                                            ? const SizedBox(
+                                                width: 10,
+                                              )
+                                            : ElevatedButton(
+                                                onPressed: () {
+                                                  purchasedModule(
+                                                      course['modules'][index]
+                                                          ["_id"]);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  minimumSize:
+                                                      const Size.fromHeight(40),
+                                                  backgroundColor:
+                                                      const Color.fromRGBO(
+                                                          240, 130, 0, 1),
+                                                ),
+                                                child: const Text("Purchase "))
                                   ],
                                 ),
                               );
