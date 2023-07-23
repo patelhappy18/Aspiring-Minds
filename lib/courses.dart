@@ -143,7 +143,7 @@ class _Courses extends State<Courses> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Category",
+                          "Courses",
                           style: TextStyle(
                               fontSize: 23, fontWeight: FontWeight.w900),
                         ),
