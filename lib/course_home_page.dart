@@ -4,6 +4,7 @@ import 'package:aspirant_minds/bottom_bar/custom_bottom_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class CourseHomePage extends StatefulWidget {
   const CourseHomePage(this.switchScreen, {super.key, required this.pageName});
@@ -22,12 +23,22 @@ class _CourseHomePage extends State<CourseHomePage> {
   String? userId = "";
   bool isPurchased = false;
   List purchasedModules = [];
-
+  String? courseName = "";
+  String reactId = "SqcY0GlETPk";
+  String flutterId = "VPvVD8t02U8";
   @override
   void initState() {
     super.initState();
     getCourse();
   }
+
+  YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: 'iLnmTe5Q2Qw',
+    flags: YoutubePlayerFlags(
+      autoPlay: true,
+      mute: true,
+    ),
+  );
 
   void onBtnPress() {
     widget.switchScreen("courses");
@@ -47,17 +58,45 @@ class _CourseHomePage extends State<CourseHomePage> {
     var purchased_modules =
         json.decode(prefs.getString('user_purchased_modules') ?? "");
     // print(prefs.getString('user_purchased_modules'));
+    prefs.setString('course_name', course['title']);
+    courseName = prefs.getString('course_name');
+
+    if (courseName == 'React') {
+      setState(() {
+        _controller = YoutubePlayerController(
+          initialVideoId: reactId,
+          flags: YoutubePlayerFlags(
+            autoPlay: true,
+            mute: true,
+          ),
+        );
+      });
+    } else {
+      setState(() {
+        _controller = YoutubePlayerController(
+          initialVideoId: flutterId,
+          flags: YoutubePlayerFlags(
+            autoPlay: true,
+            mute: true,
+          ),
+        );
+      });
+    }
 
     if (purchased_courses.contains(course["_id"])) {
       setState(() {
         isPurchased = true;
       });
     }
+    print("==============>$courseName");
+
     setState(() {
       purchasedModules = purchased_modules;
     });
     print(purchasedModules);
     print(course['modules'][0]["_id"]);
+
+    // prefs.setString('courseName', course['title']);
     print(purchasedModules.contains(course['modules'][0]["_id"]));
 
     // Do something with the user's email...
@@ -209,6 +248,15 @@ class _CourseHomePage extends State<CourseHomePage> {
                     Container(
                       width: 341,
                       height: 205,
+                      child: YoutubePlayer(
+                        controller: _controller,
+                        showVideoProgressIndicator: true,
+                        progressIndicatorColor: Colors.amber,
+                        progressColors: ProgressBarColors(
+                          playedColor: Colors.amber,
+                          handleColor: Colors.amberAccent,
+                        ),
+                      ),
                       decoration: ShapeDecoration(
                         image: const DecorationImage(
                           image: AssetImage(

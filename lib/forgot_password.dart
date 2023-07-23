@@ -25,6 +25,7 @@ class _ForgotPassword extends State<ForgotPassword> {
   final _newPasswordController = TextEditingController();
   final _otpController = TextEditingController();
   String _Error = "";
+  String _passwordError = '';
 
   @override
   void initState() {
@@ -34,6 +35,18 @@ class _ForgotPassword extends State<ForgotPassword> {
 
   void onBtnPress() {
     widget.switchScreen("login");
+  }
+
+  bool containsUppercase(String value) {
+    return value.contains(RegExp(r'[A-Z]'));
+  }
+
+  bool containsLowercase(String value) {
+    return value.contains(RegExp(r'[a-z]'));
+  }
+
+  bool containsDigit(String value) {
+    return value.contains(RegExp(r'[0-9]'));
   }
 
   void onGetOTP() async {
@@ -110,6 +123,32 @@ class _ForgotPassword extends State<ForgotPassword> {
       final email = prefs.getString('user_email');
       _Error = "";
 
+      if (_newPasswordController.text == '') {
+        setState(() {
+          _passwordError = "Enter new Password";
+        });
+        return;
+      } else {
+        if (_newPasswordController.text.length < 8) {
+          setState(() {
+            _passwordError = 'Password must be at least 8 characters long';
+          });
+          return;
+        }
+        if (!containsUppercase(_newPasswordController.text) ||
+            !containsLowercase(_newPasswordController.text) ||
+            !containsDigit(_newPasswordController.text)) {
+          setState(() {
+            _passwordError = 'at least one uppercase, lowercase and a digit';
+          });
+          return;
+        } else {
+          setState(() {
+            _passwordError = '';
+          });
+        }
+      }
+
       if (_newPasswordController.text != "") {
         String apiUrl = 'http://localhost:8000/users/update-password-google';
         var data = {'email': email, 'password': _newPasswordController.text};
@@ -132,106 +171,110 @@ class _ForgotPassword extends State<ForgotPassword> {
 
   @override
   Widget build(context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Center(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.80,
-          child: SizedBox(
+    return SafeArea(
+      child: SizedBox(
+        width: double.infinity,
+        child: Center(
+          child: Container(
             width: MediaQuery.of(context).size.width * 0.80,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    CustomBackButton(
-                      const Icon(
-                        Icons.arrow_left_outlined,
-                        size: 40,
-                        color: Color.fromRGBO(240, 130, 0, 1),
-                      ),
-                      onClick: onBtnPress,
-                    ),
-                  ],
-                ),
-                Image.asset(
-                  'assets/images/login_signup_logo.png',
-                  height: 250,
-                ), // Replace with your image source
-                const SizedBox(height: 20),
-                const Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      "Forgot Password",
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 30),
-                Expanded(
-                  child: Column(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.80,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      currentState == "getOTP"
-                          ? TextBox(
-                              innerTxt: ' Email Address',
-                              customController: _emailController,
-                              errorText: _Error == '' ? null : _Error,
-                            )
-                          : currentState == "verifyOTP"
-                              ? TextBox(
-                                  innerTxt: ' OTP',
-                                  customController: _otpController,
-                                  errorText: _Error == '' ? null : _Error,
-                                )
-                              : TextBox(
-                                  innerTxt: ' New Password',
-                                  customController: _newPasswordController,
-                                  errorText: _Error == '' ? null : _Error,
-                                  isPassword: true,
-                                ),
-                      const SizedBox(height: 10),
+                      CustomBackButton(
+                        const Icon(
+                          Icons.arrow_left_outlined,
+                          size: 40,
+                          color: Color.fromRGBO(240, 130, 0, 1),
+                        ),
+                        onClick: onBtnPress,
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 10),
-                currentState == "getOTP"
-                    ? TxtButton(
-                        buttonText: "Get OTP",
-                        btnColor: const Color.fromRGBO(240, 130, 0, 1),
-                        txtColor: Colors.white,
-                        borderColor: Colors.grey,
-                        isIconBtn: false,
-                        onClick: onGetOTP,
-                        width: 0.4,
+                  Image.asset(
+                    'assets/images/login_signup_logo.png',
+                    height: 250,
+                  ), // Replace with your image source
+                  const SizedBox(height: 20),
+                  const Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        "Forgot Password",
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                        ),
                       )
-                    : currentState == "verifyOTP"
-                        ? TxtButton(
-                            buttonText: "Verify OTP",
-                            btnColor: const Color.fromRGBO(240, 130, 0, 1),
-                            txtColor: Colors.white,
-                            borderColor: Colors.grey,
-                            isIconBtn: false,
-                            onClick: onGetOTP,
-                            width: 0.39,
-                          )
-                        : TxtButton(
-                            buttonText: "Change Password",
-                            btnColor: const Color.fromRGBO(240, 130, 0, 1),
-                            txtColor: Colors.white,
-                            borderColor: Colors.grey,
-                            isIconBtn: false,
-                            onClick: onGetOTP,
-                            width: 0.32,
-                          ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        currentState == "getOTP"
+                            ? TextBox(
+                                innerTxt: ' Email Address',
+                                customController: _emailController,
+                                errorText: _Error == '' ? null : _Error,
+                              )
+                            : currentState == "verifyOTP"
+                                ? TextBox(
+                                    innerTxt: ' OTP',
+                                    customController: _otpController,
+                                    errorText: _Error == '' ? null : _Error,
+                                  )
+                                : TextBox(
+                                    innerTxt: ' New Password',
+                                    customController: _newPasswordController,
+                                    errorText: _passwordError == ''
+                                        ? null
+                                        : _passwordError,
+                                    isPassword: true,
+                                  ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  currentState == "getOTP"
+                      ? TxtButton(
+                          buttonText: "Get OTP",
+                          btnColor: const Color.fromRGBO(240, 130, 0, 1),
+                          txtColor: Colors.white,
+                          borderColor: Colors.grey,
+                          isIconBtn: false,
+                          onClick: onGetOTP,
+                          width: 0.4,
+                        )
+                      : currentState == "verifyOTP"
+                          ? TxtButton(
+                              buttonText: "Verify OTP",
+                              btnColor: const Color.fromRGBO(240, 130, 0, 1),
+                              txtColor: Colors.white,
+                              borderColor: Colors.grey,
+                              isIconBtn: false,
+                              onClick: onGetOTP,
+                              width: 0.25,
+                            )
+                          : TxtButton(
+                              buttonText: "Change Password",
+                              btnColor: const Color.fromRGBO(240, 130, 0, 1),
+                              txtColor: Colors.white,
+                              borderColor: Colors.grey,
+                              isIconBtn: false,
+                              onClick: onGetOTP,
+                              width: 0.25,
+                            ),
 
-                const SizedBox(height: 50),
-              ],
+                  const SizedBox(height: 50),
+                ],
+              ),
             ),
           ),
         ),

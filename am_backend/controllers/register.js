@@ -35,7 +35,7 @@ const createUser = asyncWrapper(async (req, res) => {
     res.json(registerUser);
     // res.render("home-2",{records:provider,bills:files,ques:ques});
   } else {
-    req.flash("message", "This email address is already registered with us");
+    res.send(404);
     // res.redirect('/register');
   }
 });

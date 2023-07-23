@@ -145,7 +145,7 @@ class _Explore extends State<Explore> {
                       child: Column(
                         children: [
                           Container(
-                            height: 550,
+                            height: 450,
                             child: ListView.separated(
                               separatorBuilder:
                                   (BuildContext context, int index) =>

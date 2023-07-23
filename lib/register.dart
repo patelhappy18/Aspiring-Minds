@@ -129,8 +129,7 @@ class _Register extends State<Register> {
         print("Validation failed");
 
         setState(() {
-          _passwordError =
-              'Password must contain at least one uppercase letter, one lowercase letter, and one digit';
+          _passwordError = 'at least one uppercase, lowercase, and one digit';
         });
         return;
       } else {
@@ -174,6 +173,10 @@ class _Register extends State<Register> {
         prefs.setString('user_purchased_modules',
             json.encode(jsonResponse["purchasedModules"]));
         widget.switchScreen("courses");
+      } else if (response.statusCode == 404) {
+        setState(() {
+          _emailError = 'User already registered';
+        });
       } else {
         // Error response from the backend
         print('Request failed with status: ${response.statusCode}');
