@@ -27,7 +27,7 @@ class _CourseHomePage extends State<CourseHomePage> {
   void initState() {
     super.initState();
     print("In page");
-    // getCourse();
+    getCourse();
   }
 
   void onBtnPress() {
@@ -38,31 +38,31 @@ class _CourseHomePage extends State<CourseHomePage> {
     print(module);
   }
 
-  // Future<void> getCourse() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> getCourse() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  //   course = json.decode(prefs.getString('course') ?? " ");
-  //   userId = prefs.getString('user_id') ?? "";
-  //   var purchased_courses =
-  //       json.decode(prefs.getString('user_purchased_courses') ?? "");
-  //   var purchased_modules =
-  //       json.decode(prefs.getString('user_purchased_modules') ?? "");
-  //   // print(prefs.getString('user_purchased_modules'));
+    course = json.decode(prefs.getString('course') ?? " ");
+    userId = prefs.getString('user_id') ?? "";
+    var purchased_courses =
+        json.decode(prefs.getString('user_purchased_courses') ?? "");
+    var purchased_modules =
+        json.decode(prefs.getString('user_purchased_modules') ?? "");
+    // print(prefs.getString('user_purchased_modules'));
 
-  //   if (purchased_courses.contains(course["_id"])) {
-  //     setState(() {
-  //       isPurchased = true;
-  //     });
-  //   }
-  //   setState(() {
-  //     purchasedModules = purchased_modules;
-  //   });
-  //   print(purchasedModules);
-  //   print(course['modules'][0]["_id"]);
-  //   print(purchasedModules.contains(course['modules'][0]["_id"]));
+    if (purchased_courses.contains(course["_id"])) {
+      setState(() {
+        isPurchased = true;
+      });
+    }
+    setState(() {
+      purchasedModules = purchased_modules;
+    });
+    print(purchasedModules);
+    print(course['modules'][0]["_id"]);
+    print(purchasedModules.contains(course['modules'][0]["_id"]));
 
-  //   // Do something with the user's email...
-  // }
+    // Do something with the user's email...
+  }
 
   void purchaseCourse() async {
     try {
