@@ -197,9 +197,34 @@ const purchasedCourse = asyncWrapper(async (req, res) => {
           res.status(200).json(savedUser);
         })
         .catch((error) => {
-          res
-            .status(500)
-            .json({ error: "Failed to add course to purchasedCourses" });
+          res.status(500).json({ error: "Failed to purchase course" });
+        });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Failed to find user" });
+    });
+});
+
+const purchasedModule = asyncWrapper(async (req, res) => {
+  const userId = req.params.userId;
+  const moduleId = req.body.moduleId;
+  console.log("requested");
+
+  Register.findById(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      user.purchasedModules.push(moduleId);
+
+      user
+        .save()
+        .then((savedUser) => {
+          res.status(200).json(savedUser);
+        })
+        .catch((error) => {
+          res.status(500).json({ error: "Failed to purchase module" });
         });
     })
     .catch((error) => {
@@ -215,4 +240,5 @@ module.exports = {
   updatePasswordGoogle,
   searchUsers,
   purchasedCourse,
+  purchasedModule,
 };
