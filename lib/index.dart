@@ -1,3 +1,4 @@
+import 'package:aspirant_minds/UI_Chat.dart';
 import 'package:aspirant_minds/chat_list.dart';
 import 'package:aspirant_minds/chats.dart';
 import 'package:aspirant_minds/explore.dart';

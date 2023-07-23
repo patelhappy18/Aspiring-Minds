@@ -25,6 +25,8 @@ router.route("/change-password").post(changePassword);
 
 router.route("/update-password-google").post(updatePasswordGoogle);
 
+
+
 router.route("/:userId/purchased-course").post(purchasedCourse);
 
 router.route("/:userId/purchased-module").post(purchasedModule);

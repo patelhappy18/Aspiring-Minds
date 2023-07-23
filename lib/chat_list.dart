@@ -7,13 +7,12 @@ import "package:aspirant_minds/textbox_UI/text_box.dart";
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatList extends StatefulWidget {
   const ChatList(this.switchScreen, {super.key, required this.pageName});
-
   final String pageName;
   final void Function(String screenName) switchScreen;
-
   @override
   State<ChatList> createState() {
     return _ChatList();
@@ -42,15 +41,107 @@ class BottomMenuModel {
 }
 
 class _ChatList extends State<ChatList> {
+  List<Map<String, dynamic>> sendersList = [];
+  List<String> messagesContent = [];
+
+  List<String> chatUsers = [
+    'User1',
+    'User2',
+    'User3'
+  ]; // Replace with actual user data
+
   void onBtnPress() {
     widget.switchScreen("home");
   }
 
-  void onSelectChat({name, id}) async {
+  void onSelectChat({String? name, String? id}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var obj = {"name": name, "id": id};
-    prefs.setString('chat', json.encode(obj));
+
+    try {
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/msg/getSpecificMessages';
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var data = {
+        'senderId': id,
+        'receiverId': prefs.getString('user_id'),
+      };
+      // prefs.setString('receiverId',data['senderId']);
+
+      // Make the POST request to your Node.js backend
+      http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+      final jsonResponse = json.decode(response.body);
+      if (response.statusCode == 200) {
+        // sendersList = List<Map<String, dynamic>>.from(jsonResponse['responseData']);
+        List<dynamic> messagesData = jsonResponse['messages'];
+        List<String> messageContents = List<String>.from(
+            messagesData.map((message) => message['content']));
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        List<dynamic> messageContentsData = messageContents.toList();
+        String messageContentsJson = json.encode(messagesData);
+        prefs.setString('messageContents', messageContentsJson);
+      } else {
+        // Error response from the backend
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
+
     widget.switchScreen("chat");
+  }
+
+  @override
+  void initState() {
+    getChatList();
+    super.initState();
+
+    // Connect to the Socket.IO server
+    IO.Socket socket = IO.io('http://localhost:8000', <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    // Listen for incoming messages from the server
+    socket.on('chatList', (data) {
+      setState(() {
+        chatUsers = List<String>.from(data['users']);
+      });
+    });
+  }
+
+  void getChatList() async {
+    try {
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/msg/getSpecificUsermessages';
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var data = {
+        'receiverId': prefs.getString('user_id'),
+      };
+      print(data);
+
+      // Make the POST request to your Node.js backend
+      http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+      final jsonResponse = json.decode(response.body);
+
+      // Update the UI with the new data
+      print(jsonResponse);
+      // Process the response
+      if (response.statusCode == 200) {
+        setState(() {
+          sendersList =
+              List<Map<String, dynamic>>.from(jsonResponse['responseData']);
+        });
+      } else {
+        // Error response from the backend
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
   }
 
   @override
@@ -90,14 +181,18 @@ class _ChatList extends State<ChatList> {
                     ),
                     Expanded(
                       child: ListView.separated(
-                        itemCount: 10,
+                        itemCount: sendersList.length,
                         separatorBuilder: (BuildContext context, int index) =>
                             const Divider(),
                         itemBuilder: (BuildContext context, int index) {
+                          // Access the sender's data from the sendersList
+                          String firstname = sendersList[index]['firstname'];
+
                           return GestureDetector(
-                            onTap: () {
-                              onSelectChat(name: "Jack", id: index);
-                            },
+                            onTap: () => onSelectChat(
+                              name: sendersList[index]['firstname'],
+                              id: sendersList[index]['_id'],
+                            ),
                             child: Container(
                               padding: const EdgeInsets.all(15),
                               decoration: BoxDecoration(
@@ -114,8 +209,8 @@ class _ChatList extends State<ChatList> {
                                   const SizedBox(
                                     width: 10,
                                   ),
-                                  const Text(
-                                    "Jack",
+                                  Text(
+                                    firstname,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w800,
                                       letterSpacing: 0.8,

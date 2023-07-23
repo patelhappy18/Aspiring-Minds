@@ -43,10 +43,23 @@ class BottomMenuModel {
 
 class _Profile extends State<Profile> {
   // late TabController tabviewController;
+  String userName = '';
+  String email = '';
+
   @override
   void initState() {
     super.initState();
+    updateInfo();
     // tabviewController = TabController(length: 2, vsync: this);
+  }
+
+  void updateInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      userName = prefs.getString('user_name') ?? 'Harry';
+      email = prefs.getString('user_email') ?? 'harry@gmail.com';
+    });
   }
 
   void onBtnPress() {
@@ -56,6 +69,18 @@ class _Profile extends State<Profile> {
   Future<void> clearSharedPreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
+  }
+
+  bool containsUppercase(String value) {
+    return value.contains(RegExp(r'[A-Z]'));
+  }
+
+  bool containsLowercase(String value) {
+    return value.contains(RegExp(r'[a-z]'));
+  }
+
+  bool containsDigit(String value) {
+    return value.contains(RegExp(r'[0-9]'));
   }
 
   @override
@@ -105,14 +130,14 @@ class _Profile extends State<Profile> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "John Wick",
+                            Text(
+                              userName,
                               style: TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.w900),
                             ),
-                            const Text(
-                              "john@gmail.com",
-                              style: TextStyle(fontSize: 16),
+                            Text(
+                              email,
+                              style: TextStyle(fontSize: 10),
                             ),
                             ElevatedButton(
                               onPressed: () {

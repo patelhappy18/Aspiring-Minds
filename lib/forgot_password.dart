@@ -193,6 +193,7 @@ class _ForgotPassword extends State<ForgotPassword> {
                                   innerTxt: ' New Password',
                                   customController: _newPasswordController,
                                   errorText: _Error == '' ? null : _Error,
+                                  isPassword: true,
                                 ),
                       const SizedBox(height: 10),
                     ],

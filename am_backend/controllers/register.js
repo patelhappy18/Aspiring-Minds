@@ -30,9 +30,9 @@ const createUser = asyncWrapper(async (req, res) => {
     // req.session.userId = registerUser['_id'];
     // req.session.email = req.body.email;
     // req.session.pname = req.body.pname;
-
+      console.log(registerUser)
     // console.log(req.session);
-    res.json("Done");
+    res.json(registerUser);
     // res.render("home-2",{records:provider,bills:files,ques:ques});
   } else {
     req.flash("message", "This email address is already registered with us");
