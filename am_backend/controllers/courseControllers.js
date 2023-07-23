@@ -1,6 +1,6 @@
 const asyncWrapper = require("../middleware/asyncWrapper");
 const bcrypt = require("bcryptjs");
-const Course = require("../model/course");
+const { Course } = require("../model/course");
 
 const createCourse = asyncWrapper(async (req, res) => {
   const { title, author, rating, price, modules } = req.body;
