@@ -17,7 +17,7 @@ router.route("/registerNewUser").post(createUser);
 
 router.route("/getUser").post(getUser);
 
-router.route("/searchUsers").get(searchUsers);
+router.route("/searchUsers").post(searchUsers);
 
 router.route("/email-send").post(emailSend);
 
