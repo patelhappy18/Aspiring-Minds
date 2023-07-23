@@ -35,6 +35,12 @@ const TaskSchema = new mongoose.Schema({
       ref: "Module", // This refers to the Module model
     },
   ],
+  connections: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Register", // This refers to the Module model
+    },
+  ],
 });
 
 module.exports = mongoose.model("Register", TaskSchema); //This name is used with adding 's' behind the name for naming the collection

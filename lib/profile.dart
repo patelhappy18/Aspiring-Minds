@@ -77,7 +77,7 @@ class _Profile extends State<Profile> {
         setState(() {
           courses = jsonResponse;
         });
-        print(courses[0]['title']);
+        print(courses.length);
       }
     } catch (e) {
       print("Error : $e");
@@ -207,56 +207,72 @@ class _Profile extends State<Profile> {
                           tabComponents: [
                             SizedBox(
                               // width: size.width,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                            top: 14,
-                                            right: 15,
-                                            bottom: 14,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFF6F6F6),
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: 2,
-                                                  bottom: 3,
-                                                ),
-                                                child: Text(
-                                                  "React",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    letterSpacing: 0.8,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      Container(
+                                        height: 300,
+                                        child: ListView.separated(
+                                            itemBuilder: (context, index) =>
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 15,
+                                                    top: 14,
+                                                    right: 15,
+                                                    bottom: 14,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFF6F6F6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          left: 2,
+                                                          bottom: 3,
+                                                        ),
+                                                        child: Text(
+                                                          courses[index]
+                                                              ['title'],
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                            letterSpacing: 0.8,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                            separatorBuilder:
+                                                (BuildContext context,
+                                                        int index) =>
+                                                    const Divider(),
+                                            itemCount: courses.length),
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(
