@@ -13,6 +13,13 @@ const moduleSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  quiz_data: [
+    {
+      question: String,
+      answers: [String],
+      correctIndex: { type: Number },
+    },
+  ],
 });
 
 const courseSchema = new mongoose.Schema({
