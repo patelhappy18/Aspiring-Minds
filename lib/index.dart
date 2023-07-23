@@ -6,6 +6,7 @@ import 'package:aspirant_minds/courses.dart';
 import 'package:aspirant_minds/login.dart';
 import 'package:aspirant_minds/other_user_profile.dart';
 import 'package:aspirant_minds/profile.dart';
+import 'package:aspirant_minds/quiz.dart';
 import 'package:flutter/material.dart';
 import 'package:aspirant_minds/home.dart';
 import 'package:aspirant_minds/register.dart';
@@ -83,6 +84,9 @@ class __Index extends State<Index> {
       if (screenName == "other_user_profile") {
         activeScreen = OtherUserProfile(switchScreen, pageName: "chat");
       }
+      if (screenName == "quiz") {
+        activeScreen = Quiz(switchScreen, pageName: "quiz");
+      }
     });
   }
 
@@ -97,8 +101,8 @@ class __Index extends State<Index> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           )),
-          // child: Login(switchScreen),
           child: activeScreen,
+          // child: activeScreen,
           //another method to change the widgets
           // child: activeScreen == 'start-screen' ? startScreen(switchScreen()): const QuestionScreens(),
         ),
