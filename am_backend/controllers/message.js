@@ -18,9 +18,16 @@ const saveMessage = asyncWrapper(async (req, res) => {
     
         // Save the message to the database
         const savedMessage = await newMessage.save();
+
+        const messages = await Message.find({
+          $or: [
+            { sender: senderId, receiver: receiverId },
+            { sender: receiverId, receiver: senderId },
+          ],
+        }).sort('timestamp');
     
         // Return the saved message in the response
-        res.status(201).json({ success: true, message: savedMessage });
+        res.status(201).json({ success: true, message: messages });
       } catch (error) {
         // Handle errors
         console.error('Error saving message:', error);

@@ -37,8 +37,15 @@ const TaskSchema = new mongoose.Schema({
   ],
   connections: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Register", // This refers to the Module model
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Register", // This refers to the Register model (self-reference)
+      },
+      status: {
+        type: String,
+        enum: ["pending", "accepted"], // Status can only be "pending" or "accepted"
+        default: "pending", // Default status is "pending"
+      },
     },
   ],
 });

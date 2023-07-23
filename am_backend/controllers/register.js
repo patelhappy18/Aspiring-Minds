@@ -236,6 +236,41 @@ const purchasedModule = asyncWrapper(async (req, res) => {
     });
 });
 
+
+const sendFriendRequest = asyncWrapper(async (req, res) => {
+  
+  const { senderUserId, receiverUserId } = req.body;
+
+  try {
+    // Find the sender and receiver users by their IDs
+    const senderUser = await Register.findById(senderUserId);
+    const receiverUser = await Register.findById(receiverUserId);
+
+    if (!senderUser || !receiverUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the friend request has already been sent
+    const isFriendRequestSent = senderUser.connections.some(
+      (connection) => connection.user.toString() === receiverUserId
+    );
+
+    if (isFriendRequestSent) {
+      return res.status(400).json({ message: 'Friend request already sent' });
+    }
+
+    // Add the receiver's user ID to the sender's connections array with status "pending"
+    senderUser.connections.push({ user: receiverUserId, status: 'pending' });
+    await senderUser.save();
+
+    res.status(200).json({ message: 'Friend request sent successfully' });
+  } catch (error) {
+    console.error('Error sending friend request:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 // const getAll = asyncWrapper(async (req, res) => {
 //   try {
 //     // Get the user ID from the request body
@@ -260,4 +295,5 @@ module.exports = {
   searchUsers,
   purchasedCourse,
   purchasedModule,
+  sendFriendRequest,
 };

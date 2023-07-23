@@ -10,7 +10,7 @@ const {
   updatePasswordGoogle,
   searchUsers,
   purchasedCourse,
-  purchasedModule,
+  purchasedModule,sendFriendRequest
 } = require("../controllers/register");
 
 router.route("/registerNewUser").post(createUser);
@@ -31,5 +31,8 @@ router.route("/:userId/purchased-course").post(purchasedCourse);
 
 router.route("/:userId/purchased-module").post(purchasedModule);
 // router.route("/fetchuser").post(createUser);
+router.route("/sendFriendRequest").post(sendFriendRequest);
+
+
 
 module.exports = router;
