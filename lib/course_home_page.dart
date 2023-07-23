@@ -26,7 +26,6 @@ class _CourseHomePage extends State<CourseHomePage> {
   @override
   void initState() {
     super.initState();
-    print("In page");
     getCourse();
   }
 
@@ -154,6 +153,13 @@ class _CourseHomePage extends State<CourseHomePage> {
       // Error occurred during the API request
       print('Error: $e');
     }
+  }
+
+  void startQuiz(List quiz) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('quiz_data', json.encode(quiz));
+    print("quiz : $quiz");
+    widget.switchScreen("quiz");
   }
 
   @override
@@ -364,13 +370,36 @@ class _CourseHomePage extends State<CourseHomePage> {
                                       },
                                     ),
                                     isPurchased
-                                        ? const SizedBox(
-                                            width: 10,
+                                        ? ElevatedButton(
+                                            onPressed: () {
+                                              startQuiz(course['modules'][index]
+                                                  ["quiz_data"]);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              minimumSize:
+                                                  const Size.fromHeight(40),
+                                              backgroundColor:
+                                                  const Color.fromRGBO(
+                                                      240, 130, 0, 1),
+                                            ),
+                                            child: const Text("Start Quiz "),
                                           )
                                         : purchasedModules.contains(
                                                 course['modules'][index]["_id"])
-                                            ? const SizedBox(
-                                                width: 10,
+                                            ? ElevatedButton(
+                                                onPressed: () {
+                                                  startQuiz(course['modules']
+                                                      [index]["quiz_data"]);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  minimumSize:
+                                                      const Size.fromHeight(40),
+                                                  backgroundColor:
+                                                      const Color.fromRGBO(
+                                                          240, 130, 0, 1),
+                                                ),
+                                                child:
+                                                    const Text("Start Quiz "),
                                               )
                                             : ElevatedButton(
                                                 onPressed: () {
@@ -385,7 +414,8 @@ class _CourseHomePage extends State<CourseHomePage> {
                                                       const Color.fromRGBO(
                                                           240, 130, 0, 1),
                                                 ),
-                                                child: const Text("Purchase "))
+                                                child: const Text("Purchase "),
+                                              ),
                                   ],
                                 ),
                               );
