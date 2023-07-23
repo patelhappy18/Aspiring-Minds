@@ -29,6 +29,12 @@ const TaskSchema = new mongoose.Schema({
       ref: "Course", // This refers to the Course model
     },
   ],
+  purchasedModules: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Module", // This refers to the Module model
+    },
+  ],
 });
 
 module.exports = mongoose.model("Register", TaskSchema); //This name is used with adding 's' behind the name for naming the collection
