@@ -135,6 +135,8 @@ class _Register extends State<Register> {
         prefs.setString('user_id', jsonResponse['_id']);
         prefs.setString('user_purchased_courses',
             json.encode(jsonResponse["purchasedCourses"]));
+        prefs.setString('user_purchased_modules',
+            json.encode(jsonResponse["purchasedModules"]));
         widget.switchScreen("courses");
       } else {
         // Error response from the backend

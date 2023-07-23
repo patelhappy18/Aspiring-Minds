@@ -101,6 +101,8 @@ class _Login extends State<Login> {
         prefs.setString('user_id', jsonResponse['_id']);
         prefs.setString('user_purchased_courses',
             json.encode(jsonResponse["purchasedCourses"]));
+        prefs.setString('user_purchased_modules',
+            json.encode(jsonResponse["purchasedModules"]));
         widget.switchScreen("courses");
       } else if (response.statusCode == 404) {
         // User not found

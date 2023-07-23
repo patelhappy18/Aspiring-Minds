@@ -67,13 +67,14 @@ const getUser = asyncWrapper(async (req, res) => {
 
 const searchUsers = asyncWrapper((req, res) => {
   const searchQuery = req.query.q; // The search query parameter from the request query
-
+  const currentUser = req.body.userId;
   // Using regular expression to perform a case-insensitive search on both firstname and lastname
   Register.find({
     $or: [
       { firstname: { $regex: searchQuery, $options: "i" } },
       { lastname: { $regex: searchQuery, $options: "i" } },
     ],
+    id: { $ne: currentUser },
   })
     .then((users) => {
       res.status(200).json(users);
@@ -197,15 +198,55 @@ const purchasedCourse = asyncWrapper(async (req, res) => {
           res.status(200).json(savedUser);
         })
         .catch((error) => {
-          res
-            .status(500)
-            .json({ error: "Failed to add course to purchasedCourses" });
+          res.status(500).json({ error: "Failed to purchase course" });
         });
     })
     .catch((error) => {
       res.status(500).json({ error: "Failed to find user" });
     });
 });
+
+const purchasedModule = asyncWrapper(async (req, res) => {
+  const userId = req.params.userId;
+  const moduleId = req.body.moduleId;
+  console.log("requested");
+
+  Register.findById(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      user.purchasedModules.push(moduleId);
+
+      user
+        .save()
+        .then((savedUser) => {
+          res.status(200).json(savedUser);
+        })
+        .catch((error) => {
+          res.status(500).json({ error: "Failed to purchase module" });
+        });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Failed to find user" });
+    });
+});
+
+// const getAll = asyncWrapper(async (req, res) => {
+//   try {
+//     // Get the user ID from the request body
+//     const { userId } = req.body;
+
+//     // Find all users except the one with the given ID
+//     const users = await User.find({ id: { $ne: userId } });
+
+//     // Send the response with the users
+//     res.json(users);
+//   } catch (err) {
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// });
 
 module.exports = {
   getUser,
@@ -215,4 +256,5 @@ module.exports = {
   updatePasswordGoogle,
   searchUsers,
   purchasedCourse,
+  purchasedModule,
 };
