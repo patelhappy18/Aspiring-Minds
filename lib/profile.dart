@@ -7,6 +7,7 @@ import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Profile extends StatefulWidget {
   Profile(this.switchScreen, {super.key, required this.pageName});
@@ -45,6 +46,8 @@ class _Profile extends State<Profile> {
   // late TabController tabviewController;
   String userName = '';
   String email = '';
+  String userId = '';
+  List courses = [];
 
   @override
   void initState() {
@@ -54,12 +57,31 @@ class _Profile extends State<Profile> {
   }
 
   void updateInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    setState(() {
-      userName = prefs.getString('user_name') ?? 'Harry';
-      email = prefs.getString('user_email') ?? 'harry@gmail.com';
-    });
+      setState(() {
+        userName = prefs.getString('user_name') ?? 'Harry';
+        email = prefs.getString('user_email') ?? 'harry@gmail.com';
+        userId = prefs.getString('user_id') ?? '';
+      });
+
+      String apiUrl = 'http://localhost:8000/courses/user/$userId';
+
+      // Make the POST request to your Node.js backend
+      http.Response response = await http.get(Uri.parse(apiUrl));
+
+      // Process the responsel
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        setState(() {
+          courses = jsonResponse;
+        });
+        print(courses[0]['title']);
+      }
+    } catch (e) {
+      print("Error : $e");
+    }
   }
 
   void onBtnPress() {
@@ -132,7 +154,7 @@ class _Profile extends State<Profile> {
                           children: [
                             Text(
                               userName,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.w900),
                             ),
                             Text(
@@ -193,60 +215,8 @@ class _Profile extends State<Profile> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 30,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                            top: 14,
-                                            right: 15,
-                                            bottom: 14,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFF6F6F6),
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: 2,
-                                                  bottom: 3,
-                                                ),
-                                                child: Text(
-                                                  "Flutter with UX/UI course",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    letterSpacing: 0.8,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: 2,
-                                                ),
-                                                child: Text("50%",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color: Color.fromRGBO(
-                                                            240, 130, 0, 1))),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
                                         ),
                                         Container(
                                           padding: const EdgeInsets.only(
@@ -270,7 +240,7 @@ class _Profile extends State<Profile> {
                                                   bottom: 3,
                                                 ),
                                                 child: Text(
-                                                  "React course",
+                                                  "React",
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   textAlign: TextAlign.left,
@@ -279,13 +249,6 @@ class _Profile extends State<Profile> {
                                                     letterSpacing: 0.8,
                                                   ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: 2,
-                                                ),
-                                                child: Icon(Icons.done,
-                                                    color: Colors.green),
                                               ),
                                             ],
                                           ),

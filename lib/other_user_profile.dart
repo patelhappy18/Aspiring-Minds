@@ -5,6 +5,9 @@ import 'package:aspirant_minds/tabbar_component/tabbar_component.dart';
 import "package:flutter/material.dart";
 import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class OtherUserProfile extends StatefulWidget {
   OtherUserProfile(this.switchScreen, {super.key, required this.pageName});
@@ -41,14 +44,34 @@ class BottomMenuModel {
 
 class _OtherUserProfile extends State<OtherUserProfile> {
   // late TabController tabviewController;
+  dynamic otherUserData = {};
+  String fullName = "";
   @override
   void initState() {
     super.initState();
+    getSelectedUserData();
     // tabviewController = TabController(length: 2, vsync: this);
   }
 
   void onBtnPress() {
-    widget.switchScreen("home");
+    widget.switchScreen("explore");
+  }
+
+  void getSelectedUserData() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var selectedUserData = json.decode(prefs.getString('other_user') ?? "");
+      if (selectedUserData != null) {
+        var firstname = selectedUserData['firstname'];
+        var lastname = selectedUserData['lastname'];
+        setState(() {
+          otherUserData = selectedUserData;
+          fullName = "$firstname $lastname";
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   @override
@@ -103,14 +126,14 @@ class _OtherUserProfile extends State<OtherUserProfile> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "John Wick",
+                            Text(
+                              fullName,
                               style: TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.w900),
                             ),
-                            const Text(
-                              "john@gmail.com",
-                              style: TextStyle(fontSize: 16),
+                            Text(
+                              otherUserData['email'],
+                              style: TextStyle(fontSize: 10),
                             ),
                             ElevatedButton(
                               onPressed: () {},
@@ -197,20 +220,6 @@ class _OtherUserProfile extends State<OtherUserProfile> {
                                                   ),
                                                 ),
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: 2,
-                                                ),
-                                                child: Text("50%",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color: Color.fromRGBO(
-                                                            240, 130, 0, 1))),
-                                              ),
                                             ],
                                           ),
                                         ),
@@ -248,13 +257,6 @@ class _OtherUserProfile extends State<OtherUserProfile> {
                                                     letterSpacing: 0.8,
                                                   ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: 2,
-                                                ),
-                                                child: Icon(Icons.done,
-                                                    color: Colors.green),
                                               ),
                                             ],
                                           ),

@@ -144,7 +144,7 @@ class _Chat extends State<Chat> {
     var chatDetails = json.decode(prefs.getString('chat') ?? "");
     var user_id = prefs.getString('user_id');
     print("prefs.getString ================> ");
-    print(prefs.getString("user_id"));
+
     setState(() {
       userName = chatDetails["name"];
       chatId = chatDetails["id"].toString();
@@ -210,8 +210,6 @@ class _Chat extends State<Chat> {
                         String formattedTime =
                             '${timeOfDay.hour}:${timeOfDay.minute}';
 
-                        print("=============> $dateTime");
-                        print("=============> $formattedTime");
                         return messages[index]['sender'] != currentUserId
                             ? Align(
                                 alignment: Alignment.centerLeft,

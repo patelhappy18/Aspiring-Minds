@@ -1,6 +1,7 @@
 const asyncWrapper = require("../middleware/asyncWrapper");
 const bcrypt = require("bcryptjs");
 const { Course } = require("../model/course");
+const Register = require("../model/register");
 
 //API for creating courses
 const createCourse = asyncWrapper(async (req, res) => {
@@ -43,8 +44,28 @@ const getCourseById = asyncWrapper((req, res) => {
     });
 });
 
+const getUserCourses = asyncWrapper((req, res) => {
+  const userId = req.params.userId;
+  console.log("userId", userId);
+  Register.findById(userId)
+    .populate("purchasedCourses")
+    .then((user, err) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Failed to fetch user courses" });
+      }
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.status(200).json(user.purchasedCourses);
+    });
+});
+
 module.exports = {
   getCourses,
   getCourseById,
   createCourse,
+  getUserCourses,
 };

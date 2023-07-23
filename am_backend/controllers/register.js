@@ -30,7 +30,7 @@ const createUser = asyncWrapper(async (req, res) => {
     // req.session.userId = registerUser['_id'];
     // req.session.email = req.body.email;
     // req.session.pname = req.body.pname;
-      console.log(registerUser)
+    console.log(registerUser);
     // console.log(req.session);
     res.json(registerUser);
     // res.render("home-2",{records:provider,bills:files,ques:ques});
@@ -68,16 +68,19 @@ const getUser = asyncWrapper(async (req, res) => {
 const searchUsers = asyncWrapper((req, res) => {
   const searchQuery = req.query.q; // The search query parameter from the request query
   const currentUser = req.body.userId;
+  console.log("currentUser", currentUser);
   // Using regular expression to perform a case-insensitive search on both firstname and lastname
   Register.find({
     $or: [
       { firstname: { $regex: searchQuery, $options: "i" } },
       { lastname: { $regex: searchQuery, $options: "i" } },
     ],
-    id: { $ne: currentUser },
   })
     .then((users) => {
-      res.status(200).json(users);
+      const filteredUsers = users
+        .map((user) => user.toObject({ getters: true }))
+        .filter((user) => user.id !== currentUser);
+      res.status(200).json(filteredUsers);
     })
     .catch((error) => {
       res.status(500).json({ error: "Failed to fetch users" });

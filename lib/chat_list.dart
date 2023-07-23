@@ -81,6 +81,7 @@ class _ChatList extends State<ChatList> {
         List<dynamic> messageContentsData = messageContents.toList();
         String messageContentsJson = json.encode(messagesData);
         prefs.setString('messageContents', messageContentsJson);
+        prefs.setString('chat', json.encode({"name": name, "id": id}));
       } else {
         // Error response from the backend
         print('Request failed with status: ${response.statusCode}');
