@@ -55,7 +55,6 @@ class _Chat extends State<Chat> {
     super.initState();
     getUserName();
     loadAllMessages();
-    super.initState();
 
     // Connect to the Socket.IO server
     IO.Socket socket = IO.io('http://localhost:8000', <String, dynamic>{
@@ -96,44 +95,53 @@ class _Chat extends State<Chat> {
 
   void demo(String s) {}
 
-  // void _sendMessage(String message) async {
-  //     String apiUrl = 'http://localhost:8000/msg/messages';
+  void _sendMessage(String message) async {
+    String apiUrl = 'http://localhost:8000/msg/messages';
+    print("sent msg");
 
-  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = {
+      'senderId': currentUserId,
+      'receiverId': chatId,
+      "content": message
+    };
 
-  //    http.Response response = await http.post(Uri.parse(apiUrl), body: data);
-  //     final jsonResponse = json.decode(response.body);
-  //     if (response.statusCode == 200) {
-  //       // sendersList = List<Map<String, dynamic>>.from(jsonResponse['responseData']);
-  //       List<dynamic> messagesData = jsonResponse['messages'];
-  //       List<String> messageContents = List<String>.from(
-  //           messagesData.map((message) => message['content']));
+    http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+    final jsonResponse = json.decode(response.body);
+    print("outside 200");
+    if (response.statusCode == 200) {
+      // sendersList = List<Map<String, dynamic>>.from(jsonResponse['responseData']);
+      List messagesData = jsonResponse['message'];
+      print("=======> messagesData : $jsonResponse");
 
-  //       SharedPreferences prefs = await SharedPreferences.getInstance();
-  //       List<dynamic> messageContentsData = messageContents.toList();
-  //       String messageContentsJson = json.encode(messageContentsData);
-  //       prefs.setString('messageContents', messageContentsJson);
-  //     } else {
-  //       // Error response from the backend
-  //       print('Request failed with status: ${response.statusCode}');
-  //     }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String messageContentsJson = json.encode(jsonResponse['message']);
+      prefs.setString('messageContents', messageContentsJson);
+      setState(() {
+        messages = jsonResponse['message'];
+      });
+      _textController.clear();
+      print("messages  : $messages");
+    } else {
+      // Error response from the backend
+      print('Request failed with status: ${response.statusCode}');
+    }
 
-  //   // Send a message to the server
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Send a message to the server
 
-  //   IO.Socket socket = IO.io('http://localhost:8000/messages');
-  //   socket.emit('message',
-  //       {'sender_user_id': prefs.getString('user_id'), 'message': message});
-  //   _messageController.clear();
-  //   if (message.isNotEmpty) {
-  //     setState(() {
-  //       messages.insert(
-  //           0, message); // Add new message to the beginning of the list
-  //     });
-  //     _textController
-  //         .clear(); // Clear the input field after sending the message
-  //   }
-  // }
+    // IO.Socket socket = IO.io('http://localhost:8000/messages');
+    // socket.emit('message',
+    //     {'sender_user_id': prefs.getString('user_id'), 'message': message});
+    // _messageController.clear();
+    // if (message.isNotEmpty) {
+    //   setState(() {
+    //     messages.insert(
+    //         0, message); // Add new message to the beginning of the list
+    //   });
+    //   _textController
+    //       .clear(); // Clear the input field after sending the message
+    // }
+  }
 
   void onBtnPress() {
     widget.switchScreen("chat_list");
@@ -143,7 +151,6 @@ class _Chat extends State<Chat> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var chatDetails = json.decode(prefs.getString('chat') ?? "");
     var user_id = prefs.getString('user_id');
-    print("prefs.getString ================> ");
 
     setState(() {
       userName = chatDetails["name"];
@@ -197,7 +204,7 @@ class _Chat extends State<Chat> {
                   const SizedBox(height: 15),
                   Expanded(
                     child: ListView.builder(
-                      reverse: true, // Start from the bottom
+                      // reverse: true, // Start from the bottom
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
                         // Access the content of each message from the messages list
@@ -376,8 +383,8 @@ class _Chat extends State<Chat> {
           child: IconButton(
             color: Colors.white,
             icon: const Icon(Icons.send),
-            onPressed: () => {},
-            // onPressed: () => _sendMessage(_textController.text),
+            // onPressed: () => {},
+            onPressed: () => _sendMessage(_textController.text),
           ),
         ),
       ],

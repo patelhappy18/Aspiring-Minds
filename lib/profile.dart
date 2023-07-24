@@ -52,11 +52,11 @@ class _Profile extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    updateInfo();
+    getUserInfo();
     // tabviewController = TabController(length: 2, vsync: this);
   }
 
-  void updateInfo() async {
+  void getUserInfo() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
