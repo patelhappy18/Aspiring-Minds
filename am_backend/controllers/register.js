@@ -263,9 +263,51 @@ const sendFriendRequest = asyncWrapper(async (req, res) => {
     senderUser.connections.push({ user: receiverUserId, status: 'pending' });
     await senderUser.save();
 
+    receiverUser.connections.push({ user: senderUserId, status: 'pending' });
+    await receiverUser.save();
+
+
     res.status(200).json({ message: 'Friend request sent successfully' });
   } catch (error) {
     console.error('Error sending friend request:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+const acceptFriendRequest = asyncWrapper(async (req, res) => {
+  
+  const { senderUserId, receiverUserId } = req.body;
+
+  try {
+    // Find the user by their ID
+    const receiver = await Register.findById(receiverUserId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the friend in the connections array
+    const friendConnection = user.connections.find(
+      (connection) => connection.user.toString() === friendId
+    );
+
+    if (!friendConnection) {
+      return res.status(400).json({ message: 'Friend request not found' });
+    }
+
+    if (friendConnection.status === 'accepted') {
+      return res.status(400).json({ message: 'Friend request already accepted' });
+    }
+
+    // Update the friend's status to "accepted"
+    friendConnection.status = 'accepted';
+
+    // Save the updated user object
+    await user.save();
+
+    res.status(200).json({ message: 'Friend request accepted successfully' });
+  } catch (error) {
+    console.error('Error accepting friend request:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -296,4 +338,5 @@ module.exports = {
   purchasedCourse,
   purchasedModule,
   sendFriendRequest,
+  acceptFriendRequest,
 };

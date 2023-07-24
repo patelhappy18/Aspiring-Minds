@@ -260,7 +260,7 @@ class _ForgotPassword extends State<ForgotPassword> {
                               borderColor: Colors.grey,
                               isIconBtn: false,
                               onClick: onGetOTP,
-                              width: 0.25,
+                              width: 0.18,
                             )
                           : TxtButton(
                               buttonText: "Change Password",
@@ -269,7 +269,7 @@ class _ForgotPassword extends State<ForgotPassword> {
                               borderColor: Colors.grey,
                               isIconBtn: false,
                               onClick: onGetOTP,
-                              width: 0.25,
+                              width: 0.18,
                             ),
 
                   const SizedBox(height: 50),
