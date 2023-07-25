@@ -4,6 +4,7 @@ import 'package:aspirant_minds/bottom_bar/custom_bottom_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class CourseHomePage extends StatefulWidget {
   const CourseHomePage(this.switchScreen, {super.key, required this.pageName});
@@ -19,14 +20,25 @@ class CourseHomePage extends StatefulWidget {
 
 class _CourseHomePage extends State<CourseHomePage> {
   dynamic course = {};
-  String userId = "";
+  String? userId = "";
   bool isPurchased = false;
+  List purchasedModules = [];
+  String? courseName = "";
+  String reactId = "SqcY0GlETPk";
+  String flutterId = "VPvVD8t02U8";
   @override
   void initState() {
     super.initState();
-    print("In page");
     getCourse();
   }
+
+  YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: 'iLnmTe5Q2Qw',
+    flags: YoutubePlayerFlags(
+      autoPlay: true,
+      mute: true,
+    ),
+  );
 
   void onBtnPress() {
     widget.switchScreen("courses");
@@ -34,6 +46,60 @@ class _CourseHomePage extends State<CourseHomePage> {
 
   void onModulePurchase(String module) {
     print(module);
+  }
+
+  Future<void> getCourse() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    course = json.decode(prefs.getString('course') ?? " ");
+    userId = prefs.getString('user_id') ?? "";
+    var purchased_courses =
+        json.decode(prefs.getString('user_purchased_courses') ?? "");
+    var purchased_modules =
+        json.decode(prefs.getString('user_purchased_modules') ?? "");
+    // print(prefs.getString('user_purchased_modules'));
+    prefs.setString('course_name', course['title']);
+    courseName = prefs.getString('course_name');
+
+    if (courseName == 'React') {
+      setState(() {
+        _controller = YoutubePlayerController(
+          initialVideoId: reactId,
+          flags: YoutubePlayerFlags(
+            autoPlay: true,
+            mute: true,
+          ),
+        );
+      });
+    } else {
+      setState(() {
+        _controller = YoutubePlayerController(
+          initialVideoId: flutterId,
+          flags: YoutubePlayerFlags(
+            autoPlay: true,
+            mute: true,
+          ),
+        );
+      });
+    }
+
+    if (purchased_courses.contains(course["_id"])) {
+      setState(() {
+        isPurchased = true;
+      });
+    }
+    print("==============>$courseName");
+
+    setState(() {
+      purchasedModules = purchased_modules;
+    });
+    print(purchasedModules);
+    print(course['modules'][0]["_id"]);
+
+    // prefs.setString('courseName', course['title']);
+    print(purchasedModules.contains(course['modules'][0]["_id"]));
+
+    // Do something with the user's email...
   }
 
   void purchaseCourse() async {
@@ -67,22 +133,72 @@ class _CourseHomePage extends State<CourseHomePage> {
     }
   }
 
-  Future<void> getCourse() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      course = json.decode(prefs.getString('course') ?? " ");
-      userId = prefs.getString('user_id') ?? "";
-      var purchased_courses =
-          json.decode(prefs.getString('user_purchased_courses') ?? "");
-      print(prefs.getString('user_purchased_courses'));
-      if (purchased_courses.contains(course["_id"])) {
-        setState(() {
-          isPurchased = true;
-        });
-        print(isPurchased);
+  void purchasedModule(String moduleId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/users/${userId}/purchased-module';
+      // Make the POST request to your Node.js backend
+      http.Response response =
+          await http.post(Uri.parse(apiUrl), body: {"moduleId": moduleId});
+
+      // Process the responsel
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse["_id"] != null) {
+          prefs.setString(
+            'user_purchased_modules',
+            json.encode(
+              jsonResponse["purchasedModules"],
+            ),
+          );
+
+          setState(() {
+            purchasedModules = jsonResponse["purchasedModules"];
+          });
+          List boughtModules = [];
+          for (var courseModule in course['modules']) {
+            if (purchasedModules.contains(courseModule["_id"])) {
+              boughtModules.add(courseModule);
+            }
+          }
+          if (boughtModules.length == course['modules'].length) {
+            String apiUrl =
+                'http://localhost:8000/users/${userId}/purchased-course';
+            // Make the POST request to your Node.js backend
+            http.Response response = await http
+                .post(Uri.parse(apiUrl), body: {"courseId": course["_id"]});
+
+            // Process the responsel
+            if (response.statusCode == 200) {
+              final jsonResponse = json.decode(response.body);
+              if (jsonResponse["_id"] != null) {
+                prefs.setString(
+                  'user_purchased_courses',
+                  json.encode(
+                    jsonResponse["purchasedCourses"],
+                  ),
+                );
+                setState(() {
+                  isPurchased = true;
+                });
+              }
+            }
+          }
+        }
       }
-    });
-    // Do something with the user's email...
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
+  }
+
+  void startQuiz(List quiz) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('quiz_data', json.encode(quiz));
+    print("quiz : $quiz");
+    widget.switchScreen("quiz");
   }
 
   @override
@@ -132,6 +248,15 @@ class _CourseHomePage extends State<CourseHomePage> {
                     Container(
                       width: 341,
                       height: 205,
+                      child: YoutubePlayer(
+                        controller: _controller,
+                        showVideoProgressIndicator: true,
+                        progressIndicatorColor: Colors.amber,
+                        progressColors: ProgressBarColors(
+                          playedColor: Colors.amber,
+                          handleColor: Colors.amberAccent,
+                        ),
+                      ),
                       decoration: ShapeDecoration(
                         image: const DecorationImage(
                           image: AssetImage(
@@ -292,18 +417,53 @@ class _CourseHomePage extends State<CourseHomePage> {
                                         );
                                       },
                                     ),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          onModulePurchase(
-                                              course['modules'][index]["name"]);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          minimumSize:
-                                              const Size.fromHeight(40),
-                                          backgroundColor: const Color.fromRGBO(
-                                              240, 130, 0, 1),
-                                        ),
-                                        child: const Text("Purchase "))
+                                    isPurchased
+                                        ? ElevatedButton(
+                                            onPressed: () {
+                                              startQuiz(course['modules'][index]
+                                                  ["quiz_data"]);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              minimumSize:
+                                                  const Size.fromHeight(40),
+                                              backgroundColor:
+                                                  const Color.fromRGBO(
+                                                      240, 130, 0, 1),
+                                            ),
+                                            child: const Text("Start Quiz "),
+                                          )
+                                        : purchasedModules.contains(
+                                                course['modules'][index]["_id"])
+                                            ? ElevatedButton(
+                                                onPressed: () {
+                                                  startQuiz(course['modules']
+                                                      [index]["quiz_data"]);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  minimumSize:
+                                                      const Size.fromHeight(40),
+                                                  backgroundColor:
+                                                      const Color.fromRGBO(
+                                                          240, 130, 0, 1),
+                                                ),
+                                                child:
+                                                    const Text("Start Quiz "),
+                                              )
+                                            : ElevatedButton(
+                                                onPressed: () {
+                                                  purchasedModule(
+                                                      course['modules'][index]
+                                                          ["_id"]);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  minimumSize:
+                                                      const Size.fromHeight(40),
+                                                  backgroundColor:
+                                                      const Color.fromRGBO(
+                                                          240, 130, 0, 1),
+                                                ),
+                                                child: const Text("Purchase "),
+                                              ),
                                   ],
                                 ),
                               );

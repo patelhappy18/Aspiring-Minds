@@ -7,6 +7,7 @@ import "package:aspirant_minds/buttons_UI/text_button.dart";
 import "package:aspirant_minds/textbox_UI/text_box.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Profile extends StatefulWidget {
   Profile(this.switchScreen, {super.key, required this.pageName});
@@ -43,10 +44,100 @@ class BottomMenuModel {
 
 class _Profile extends State<Profile> {
   // late TabController tabviewController;
+  String userName = '';
+  String email = '';
+  String userId = '';
+  List courses = [];
+  List connections = [];
+  List requests = [];
+
   @override
   void initState() {
     super.initState();
+    getUserInfo();
     // tabviewController = TabController(length: 2, vsync: this);
+  }
+
+  void getUserInfo() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      setState(() {
+        userName = prefs.getString('user_name') ?? 'Harry';
+        email = prefs.getString('user_email') ?? 'harry@gmail.com';
+        userId = prefs.getString('user_id') ?? '';
+      });
+
+      String apiUrl = 'http://localhost:8000/courses/user/$userId';
+
+      // Make the POST request to your Node.js backend
+      http.Response response = await http.get(Uri.parse(apiUrl));
+
+      // Process the responsel
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        setState(() {
+          courses = jsonResponse;
+        });
+
+        String connectionUrl =
+            'http://localhost:8000/users/connections/accepted/$userId';
+
+        // Make the POST request to your Node.js backend
+        http.Response responseConnectionAPI =
+            await http.get(Uri.parse(connectionUrl));
+
+        // Process the responsel
+        if (responseConnectionAPI.statusCode == 200) {
+          final connectionAPIResponse = json.decode(responseConnectionAPI.body);
+          setState(() {
+            connections = connectionAPIResponse;
+          });
+          final jsonResponse = json.decode(response.body);
+          setState(() {
+            courses = jsonResponse;
+          });
+
+          String reqUrl =
+              'http://localhost:8000/users/connections/pending/$userId';
+
+          // Make the POST request to your Node.js backend
+          http.Response responseReqAPI = await http.get(Uri.parse(reqUrl));
+
+          // Process the responsel
+          if (responseReqAPI.statusCode == 200) {
+            final reqAPIResponse = json.decode(responseReqAPI.body);
+            setState(() {
+              requests = reqAPIResponse;
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error : $e");
+    }
+  }
+
+  void onReqAction(String requestId, String status) async {
+    try {
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/users/acceptFriendRequest';
+
+      // Data to be sent in the request body
+      var data = {'userId': userId, 'requestId': requestId, "status": status};
+      print(data);
+      // Make the POST request to your Node.js backend
+      http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+      print(response);
+
+      // Process the responsel
+      if (response.statusCode == 200) {
+        getUserInfo();
+      }
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
+    }
   }
 
   void onBtnPress() {
@@ -56,6 +147,18 @@ class _Profile extends State<Profile> {
   Future<void> clearSharedPreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
+  }
+
+  bool containsUppercase(String value) {
+    return value.contains(RegExp(r'[A-Z]'));
+  }
+
+  bool containsLowercase(String value) {
+    return value.contains(RegExp(r'[a-z]'));
+  }
+
+  bool containsDigit(String value) {
+    return value.contains(RegExp(r'[0-9]'));
   }
 
   @override
@@ -105,14 +208,14 @@ class _Profile extends State<Profile> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "John Wick",
-                              style: TextStyle(
+                            Text(
+                              userName,
+                              style: const TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.w900),
                             ),
-                            const Text(
-                              "john@gmail.com",
-                              style: TextStyle(fontSize: 16),
+                            Text(
+                              email,
+                              style: TextStyle(fontSize: 10),
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -155,205 +258,300 @@ class _Profile extends State<Profile> {
                           tabs: const [
                             Tab(text: 'Courses'),
                             Tab(text: 'Connections'),
+                            Tab(text: 'Requests'),
                             Tab(text: 'General'),
                           ],
                           tabComponents: [
                             SizedBox(
                               // width: size.width,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                            top: 14,
-                                            right: 15,
-                                            bottom: 14,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFF6F6F6),
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: 2,
-                                                  bottom: 3,
-                                                ),
-                                                child: Text(
-                                                  "Flutter with UX/UI course",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    letterSpacing: 0.8,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      Container(
+                                        height: 300,
+                                        child: ListView.separated(
+                                            itemBuilder: (context, index) =>
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 15,
+                                                    top: 14,
+                                                    right: 15,
+                                                    bottom: 14,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFF6F6F6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          left: 2,
+                                                          bottom: 3,
+                                                        ),
+                                                        child: Text(
+                                                          courses[index]
+                                                              ['title'],
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                            letterSpacing: 0.8,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: 2,
-                                                ),
-                                                child: Text("50%",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color: Color.fromRGBO(
-                                                            240, 130, 0, 1))),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                            top: 14,
-                                            right: 15,
-                                            bottom: 14,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFF6F6F6),
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: 2,
-                                                  bottom: 3,
-                                                ),
-                                                child: Text(
-                                                  "React course",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    letterSpacing: 0.8,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: 2,
-                                                ),
-                                                child: Icon(Icons.done,
-                                                    color: Colors.green),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                            separatorBuilder:
+                                                (BuildContext context,
+                                                        int index) =>
+                                                    const Divider(),
+                                            itemCount: courses.length),
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                            top: 14,
-                                            right: 15,
-                                            bottom: 14,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFF6F6F6),
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/profile_big.png',
-                                                height: 40,
-                                                width: 40,
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              const Text(
-                                                "Jack",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  letterSpacing: 0.8,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      Container(
+                                        height: 300,
+                                        child: ListView.separated(
+                                            itemBuilder: (context, index) =>
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 15,
+                                                    top: 14,
+                                                    right: 15,
+                                                    bottom: 14,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFF6F6F6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        'assets/images/profile_big.png',
+                                                        height: 40,
+                                                        width: 40,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        connections[index]
+                                                                ["user"]
+                                                            ['firstname'],
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          letterSpacing: 0.8,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                            top: 14,
-                                            right: 15,
-                                            bottom: 14,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFF6F6F6),
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/profile_big.png',
-                                                height: 40,
-                                                width: 40,
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              const Text(
-                                                "Lucy",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  letterSpacing: 0.8,
+                                            separatorBuilder:
+                                                (BuildContext context,
+                                                        int index) =>
+                                                    const Divider(),
+                                            itemCount: connections.length),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      Container(
+                                        height: 300,
+                                        child: ListView.separated(
+                                            itemBuilder: (context, index) =>
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 15,
+                                                    top: 14,
+                                                    right: 15,
+                                                    bottom: 14,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFF6F6F6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/profile_big.png',
+                                                            height: 40,
+                                                            width: 40,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            requests[index]
+                                                                    ["user"]
+                                                                ['firstname'],
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              letterSpacing:
+                                                                  0.8,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              onReqAction(
+                                                                  requests[
+                                                                          index]
+                                                                      ["_id"],
+                                                                  "accepted");
+                                                            },
+                                                            style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty
+                                                                      .all<
+                                                                          Color>(
+                                                                const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    9,
+                                                                    201,
+                                                                    114),
+                                                              ),
+                                                              shape: MaterialStateProperty
+                                                                  .all<
+                                                                      RoundedRectangleBorder>(
+                                                                RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              50),
+                                                                  side:
+                                                                      const BorderSide(
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            9,
+                                                                            201,
+                                                                            114),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            child: const Icon(
+                                                                Icons.check),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              onReqAction(
+                                                                  requests[
+                                                                          index]
+                                                                      ["_id"],
+                                                                  "rejected");
+                                                            },
+                                                            style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty.all<
+                                                                          Color>(
+                                                                      const Color
+                                                                              .fromARGB(
+                                                                          255,
+                                                                          240,
+                                                                          68,
+                                                                          0)),
+                                                              shape: MaterialStateProperty
+                                                                  .all<
+                                                                      RoundedRectangleBorder>(
+                                                                RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              50),
+                                                                  side: const BorderSide(
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          240,
+                                                                          68,
+                                                                          0)),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            child: const Icon(
+                                                                Icons.cancel),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                            separatorBuilder:
+                                                (BuildContext context,
+                                                        int index) =>
+                                                    const Divider(),
+                                            itemCount: requests.length),
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(

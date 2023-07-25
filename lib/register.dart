@@ -49,6 +49,18 @@ class _Register extends State<Register> {
     // Call the function to make the API request to your Node.js backend
   }
 
+  bool containsUppercase(String value) {
+    return value.contains(RegExp(r'[A-Z]'));
+  }
+
+  bool containsLowercase(String value) {
+    return value.contains(RegExp(r'[a-z]'));
+  }
+
+  bool containsDigit(String value) {
+    return value.contains(RegExp(r'[0-9]'));
+  }
+
   Future<void> registerUser() async {
     String demo = "";
     String email = _emailController.text;
@@ -102,13 +114,34 @@ class _Register extends State<Register> {
       });
       return;
     } else {
-      setState(() {
-        _passwordError = "";
-      });
+      print(password);
+
+      if (password.length < 8) {
+        print("Less then 8");
+        setState(() {
+          _passwordError = 'Password must be at least 8 characters long';
+        });
+        return;
+      }
+      if (!containsUppercase(password) ||
+          !containsLowercase(password) ||
+          !containsDigit(password)) {
+        print("Validation failed");
+
+        setState(() {
+          _passwordError = 'at least one uppercase, lowercase, and one digit';
+        });
+        return;
+      } else {
+        setState(() {
+          _passwordError = '';
+        });
+      }
     }
 
     try {
       // Your API endpoint URL
+
       String apiUrl = 'http://localhost:8000/users/registerNewUser';
 
       // Data to be sent in the request body
@@ -118,13 +151,15 @@ class _Register extends State<Register> {
         'firstname': firstname,
         'lastname': lastname
       };
-
       // Make the POST request to your Node.js backend
       http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+      print(response);
 
       // Process the response
       if (response.statusCode == 200) {
         // Successful response from the backend
+        print("=====>>>$response");
+
         String userEmail =
             'example@example.com'; // Replace with actual user email
         final jsonResponse = json.decode(response.body);
@@ -135,7 +170,13 @@ class _Register extends State<Register> {
         prefs.setString('user_id', jsonResponse['_id']);
         prefs.setString('user_purchased_courses',
             json.encode(jsonResponse["purchasedCourses"]));
+        prefs.setString('user_purchased_modules',
+            json.encode(jsonResponse["purchasedModules"]));
         widget.switchScreen("courses");
+      } else if (response.statusCode == 404) {
+        setState(() {
+          _emailError = 'User already registered';
+        });
       } else {
         // Error response from the backend
         print('Request failed with status: ${response.statusCode}');

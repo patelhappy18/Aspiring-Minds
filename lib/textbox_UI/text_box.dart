@@ -7,6 +7,7 @@ class TextBox extends StatelessWidget {
     this.iconStart,
     this.customController,
     this.onSubmitted,
+    this.onChange,
     this.isPassword,
     this.errorText,
   });
@@ -17,6 +18,7 @@ class TextBox extends StatelessWidget {
   String innerTxt;
   final TextEditingController? customController;
   final void Function(String)? onSubmitted;
+  final void Function(String)? onChange;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class TextBox extends StatelessWidget {
           keyboardType: TextInputType.visiblePassword,
           controller: customController,
           onSubmitted: onSubmitted,
+          onChanged: onChange,
           obscureText: isPassword ?? false,
           decoration: InputDecoration(
             hintText: innerTxt,

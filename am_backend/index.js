@@ -3,6 +3,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 const passport = require("passport");
 const path = require("path");
+const socketIO = require("socket.io");
 
 const Register = require("./model/register");
 const Login = require("./model/login");
@@ -20,6 +21,13 @@ const tasks = require("./routes/tasks");
 const courseRoutes = require("./routes/courseRoutes");
 const flash = require("connect-flash");
 const { log } = require("console");
+
+const http = require('http');
+const server = http.createServer(app);
+const io = socketIO(server);
+
+const messageRoutes = require("./routes/messageRoutes");
+
 // app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 // app.use(passport.initialize());
@@ -43,6 +51,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/users", tasks);
 app.use("/courses", courseRoutes);
+app.use("/msg", messageRoutes);
+
 
 app.get("/get", async (req, res) => {
   res.send("HEllo");
@@ -96,9 +106,29 @@ const start = async () => {
       "mongodb+srv://goral_patel_1508:goral123@cluster0.sokemj9.mongodb.net/Aspiring-Minds?retryWrites=true&w=majority"
     );
 
-    app.listen(port, function () {
+    server.listen(port, function () {
       console.log(`Express server listening on port ${port} `);
     });
+
+
+    io.on('connection', (socket) => {
+      console.log('A user connected.');
+    
+      // Socket.IO message event handling
+      socket.on('message', (data) => {
+        console.log(`Received message: ${data.message} from ${data.user}`);
+    
+        // Broadcast the message to all connected clients (including the sender)
+        io.emit('message', data);
+      });
+    
+      // Handle disconnection
+      socket.on('disconnect', () => {
+        console.log('A user disconnected.');
+      });
+    });
+
+    
   } catch (error) {
     console.log(error);
   }

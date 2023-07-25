@@ -13,6 +13,13 @@ const moduleSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  quiz_data: [
+    {
+      question: String,
+      answers: [String],
+      correctIndex: { type: Number },
+    },
+  ],
 });
 
 const courseSchema = new mongoose.Schema({
@@ -39,5 +46,6 @@ const courseSchema = new mongoose.Schema({
 });
 
 const Course = mongoose.model("Course", courseSchema);
+const Module = mongoose.model("Module", moduleSchema);
 
-module.exports = Course;
+module.exports = { Course, Module };

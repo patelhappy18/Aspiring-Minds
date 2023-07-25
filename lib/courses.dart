@@ -117,7 +117,7 @@ class _Courses extends State<Courses> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              userName,
+                              "Hello $userName",
                               style: const TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.w900),
                             ),
@@ -143,7 +143,7 @@ class _Courses extends State<Courses> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Category",
+                          "Courses",
                           style: TextStyle(
                               fontSize: 23, fontWeight: FontWeight.w900),
                         ),
