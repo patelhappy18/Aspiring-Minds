@@ -48,6 +48,8 @@ class _Profile extends State<Profile> {
   String email = '';
   String userId = '';
   List courses = [];
+  List connections = [];
+  List requests = [];
 
   @override
   void initState() {
@@ -77,10 +79,64 @@ class _Profile extends State<Profile> {
         setState(() {
           courses = jsonResponse;
         });
-        print(courses.length);
+
+        String connectionUrl =
+            'http://localhost:8000/users/connections/accepted/$userId';
+
+        // Make the POST request to your Node.js backend
+        http.Response responseConnectionAPI =
+            await http.get(Uri.parse(connectionUrl));
+
+        // Process the responsel
+        if (responseConnectionAPI.statusCode == 200) {
+          final connectionAPIResponse = json.decode(responseConnectionAPI.body);
+          setState(() {
+            connections = connectionAPIResponse;
+          });
+          final jsonResponse = json.decode(response.body);
+          setState(() {
+            courses = jsonResponse;
+          });
+
+          String reqUrl =
+              'http://localhost:8000/users/connections/pending/$userId';
+
+          // Make the POST request to your Node.js backend
+          http.Response responseReqAPI = await http.get(Uri.parse(reqUrl));
+
+          // Process the responsel
+          if (responseReqAPI.statusCode == 200) {
+            final reqAPIResponse = json.decode(responseReqAPI.body);
+            setState(() {
+              requests = reqAPIResponse;
+            });
+          }
+        }
       }
     } catch (e) {
       print("Error : $e");
+    }
+  }
+
+  void onReqAction(String requestId, String status) async {
+    try {
+      // Your API endpoint URL
+      String apiUrl = 'http://localhost:8000/users/acceptFriendRequest';
+
+      // Data to be sent in the request body
+      var data = {'userId': userId, 'requestId': requestId, "status": status};
+      print(data);
+      // Make the POST request to your Node.js backend
+      http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+      print(response);
+
+      // Process the responsel
+      if (response.statusCode == 200) {
+        getUserInfo();
+      }
+    } catch (e) {
+      // Error occurred during the API request
+      print('Error: $e');
     }
   }
 
@@ -202,6 +258,7 @@ class _Profile extends State<Profile> {
                           tabs: const [
                             Tab(text: 'Courses'),
                             Tab(text: 'Connections'),
+                            Tab(text: 'Requests'),
                             Tab(text: 'General'),
                           ],
                           tabComponents: [
@@ -276,88 +333,225 @@ class _Profile extends State<Profile> {
                               ),
                             ),
                             SizedBox(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                            top: 14,
-                                            right: 15,
-                                            bottom: 14,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFF6F6F6),
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/profile_big.png',
-                                                height: 40,
-                                                width: 40,
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              const Text(
-                                                "Jack",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  letterSpacing: 0.8,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      Container(
+                                        height: 300,
+                                        child: ListView.separated(
+                                            itemBuilder: (context, index) =>
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 15,
+                                                    top: 14,
+                                                    right: 15,
+                                                    bottom: 14,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFF6F6F6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        'assets/images/profile_big.png',
+                                                        height: 40,
+                                                        width: 40,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        connections[index]
+                                                                ["user"]
+                                                            ['firstname'],
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          letterSpacing: 0.8,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                            top: 14,
-                                            right: 15,
-                                            bottom: 14,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFF6F6F6),
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/profile_big.png',
-                                                height: 40,
-                                                width: 40,
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              const Text(
-                                                "Lucy",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  letterSpacing: 0.8,
+                                            separatorBuilder:
+                                                (BuildContext context,
+                                                        int index) =>
+                                                    const Divider(),
+                                            itemCount: connections.length),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      Container(
+                                        height: 300,
+                                        child: ListView.separated(
+                                            itemBuilder: (context, index) =>
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 15,
+                                                    top: 14,
+                                                    right: 15,
+                                                    bottom: 14,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFF6F6F6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/profile_big.png',
+                                                            height: 40,
+                                                            width: 40,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            requests[index]
+                                                                    ["user"]
+                                                                ['firstname'],
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              letterSpacing:
+                                                                  0.8,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              onReqAction(
+                                                                  requests[
+                                                                          index]
+                                                                      ["_id"],
+                                                                  "accepted");
+                                                            },
+                                                            style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty
+                                                                      .all<
+                                                                          Color>(
+                                                                const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    9,
+                                                                    201,
+                                                                    114),
+                                                              ),
+                                                              shape: MaterialStateProperty
+                                                                  .all<
+                                                                      RoundedRectangleBorder>(
+                                                                RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              50),
+                                                                  side:
+                                                                      const BorderSide(
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            9,
+                                                                            201,
+                                                                            114),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            child: const Icon(
+                                                                Icons.check),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              onReqAction(
+                                                                  requests[
+                                                                          index]
+                                                                      ["_id"],
+                                                                  "rejected");
+                                                            },
+                                                            style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty.all<
+                                                                          Color>(
+                                                                      const Color
+                                                                              .fromARGB(
+                                                                          255,
+                                                                          240,
+                                                                          68,
+                                                                          0)),
+                                                              shape: MaterialStateProperty
+                                                                  .all<
+                                                                      RoundedRectangleBorder>(
+                                                                RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              50),
+                                                                  side: const BorderSide(
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          240,
+                                                                          68,
+                                                                          0)),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            child: const Icon(
+                                                                Icons.cancel),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                            separatorBuilder:
+                                                (BuildContext context,
+                                                        int index) =>
+                                                    const Divider(),
+                                            itemCount: requests.length),
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(
