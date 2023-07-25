@@ -43,9 +43,10 @@ const TaskSchema = new mongoose.Schema({
       },
       status: {
         type: String,
-        enum: ["pending", "accepted"], // Status can only be "pending" or "accepted"
+        enum: ["pending", "accepted", "rejected"], // Status can only be "pending" or "accepted"
         default: "pending", // Default status is "pending"
       },
+      isSent: { type: Boolean },
     },
   ],
 });
