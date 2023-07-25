@@ -236,10 +236,9 @@ const purchasedModule = asyncWrapper(async (req, res) => {
     });
 });
 
-
 const sendFriendRequest = asyncWrapper(async (req, res) => {
-  
   const { senderUserId, receiverUserId } = req.body;
+  console.log(senderUserId, receiverUserId);
 
   try {
     // Find the sender and receiver users by their IDs
@@ -247,86 +246,144 @@ const sendFriendRequest = asyncWrapper(async (req, res) => {
     const receiverUser = await Register.findById(receiverUserId);
 
     if (!senderUser || !receiverUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
+    console.log(senderUser, receiverUser);
     // Check if the friend request has already been sent
     const isFriendRequestSent = senderUser.connections.some(
       (connection) => connection.user.toString() === receiverUserId
     );
 
     if (isFriendRequestSent) {
-      return res.status(400).json({ message: 'Friend request already sent' });
+      return res.status(400).json({ message: "Friend request already sent" });
     }
+    console.log(isFriendRequestSent);
 
     // Add the receiver's user ID to the sender's connections array with status "pending"
-    senderUser.connections.push({ user: receiverUserId, status: 'pending' });
+    senderUser.connections.push({
+      user: receiverUserId,
+      status: "pending",
+      isSent: true,
+    });
     await senderUser.save();
 
-    receiverUser.connections.push({ user: senderUserId, status: 'pending' });
+    receiverUser.connections.push({
+      user: senderUserId,
+      status: "pending",
+      isSent: false,
+    });
     await receiverUser.save();
+    console.log(
+      "senderUser.connections",
+      senderUser.connections,
+      "receiverUser.connections",
+      receiverUser.connections
+    );
 
-
-    res.status(200).json({ message: 'Friend request sent successfully' });
+    res.status(200).json({ message: "Friend request sent successfully" });
   } catch (error) {
-    console.error('Error sending friend request:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error sending friend request:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 const acceptFriendRequest = asyncWrapper(async (req, res) => {
-  
-  const { senderUserId, receiverUserId } = req.body;
-
   try {
+    const userId = req.body.userId;
+    const requestId = req.body.requestId; // The ID of the connection request to accept
+    const status = req.body.status; // The ID of the connection request to accept
+    console.log(userId, requestId, status);
     // Find the user by their ID
-    const receiver = await Register.findById(receiverUserId);
+    const user = await Register.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Find the friend in the connections array
-    const friendConnection = user.connections.find(
-      (connection) => connection.user.toString() === friendId
+    // Find the connection request in the user's connections array
+    const connectionRequest = user.connections.find(
+      (connection) => connection._id.toString() === requestId
+    );
+    console.log(connectionRequest);
+
+    if (!connectionRequest) {
+      return res.status(404).json({ message: "Connection request not found" });
+    }
+
+    // Update the status of the connection request to "accepted"
+    connectionRequest.status = status;
+    console.log(connectionRequest);
+    await user.save();
+    // if (status === "accepted") {
+    const receiverUser = await Register.findById(
+      connectionRequest.user.toString()
+    );
+    console.log(receiverUser);
+
+    if (!receiverUser) {
+      return res.status(404).json({ message: "Receiver not found" });
+    }
+
+    // Find the connection request in the user's connections array
+    const receiverConnectionRequest = receiverUser.connections.find(
+      (connection) => connection.user.toString() === userId
     );
 
-    if (!friendConnection) {
-      return res.status(400).json({ message: 'Friend request not found' });
+    if (!receiverConnectionRequest) {
+      return res.status(404).json({ message: "Connection request not found" });
     }
 
-    if (friendConnection.status === 'accepted') {
-      return res.status(400).json({ message: 'Friend request already accepted' });
-    }
-
-    // Update the friend's status to "accepted"
-    friendConnection.status = 'accepted';
-
-    // Save the updated user object
-    await user.save();
-
-    res.status(200).json({ message: 'Friend request accepted successfully' });
-  } catch (error) {
-    console.error('Error accepting friend request:', error);
-    res.status(500).json({ message: 'Server error' });
+    // Update the status of the connection request to "accepted"
+    receiverConnectionRequest.status = status;
+    console.log(receiverConnectionRequest);
+    await receiverUser.save();
+    // }
+    res.status(200).json({ message: "Connection request updated" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
+const getConnectionList = asyncWrapper(async (req, res) => {
+  try {
+    const userId = req.params.userId;
 
-// const getAll = asyncWrapper(async (req, res) => {
-//   try {
-//     // Get the user ID from the request body
-//     const { userId } = req.body;
+    // Find the user by their ID and populate the connections with the "accepted" status
+    const user = await Register.findById(userId).populate("connections.user");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const filteredUsers = user.connections.filter(
+      (item) => item.status === "accepted"
+    );
+    console.log("user.connections", filteredUsers);
+    res.status(200).json(filteredUsers);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
-//     // Find all users except the one with the given ID
-//     const users = await User.find({ id: { $ne: userId } });
+const getRequestList = asyncWrapper(async (req, res) => {
+  try {
+    const userId = req.params.userId;
 
-//     // Send the response with the users
-//     res.json(users);
-//   } catch (err) {
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// });
+    // Find the user by their ID and populate the connections with the "accepted" status
+    const user = await Register.findById(userId).populate("connections.user");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const filteredUsers = user.connections.filter(
+      (item) => item.status === "pending" && item.isSent === false
+    );
+    console.log("user.connections", filteredUsers);
+    res.status(200).json(filteredUsers);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = {
   getUser,
@@ -339,4 +396,6 @@ module.exports = {
   purchasedModule,
   sendFriendRequest,
   acceptFriendRequest,
+  getConnectionList,
+  getRequestList,
 };
